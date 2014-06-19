@@ -26,6 +26,8 @@ void RotationBrid::initData()
 	for (int i = 0; i < this->wallCount; ++i)
 	{
 		WallVo* wVo = WallVo::create();
+		wVo->width = 30;
+		wVo->height = 130;
 		this->wallAry->addObject(wVo);
 	}
 }
@@ -38,4 +40,10 @@ void RotationBrid::update()
 	//计算鸟身体的角度
 	this->bVo->angle = atan2(this->bVo->vy, this->bVo->vx) * 180 / M_PI;
 	if (this->bVo->y < this->floorPosY) this->bVo->y = this->floorPosY;
+	//计算墙壁
+	for (int i = 0; i < this->wallCount; ++i)
+	{
+		WallVo* wVo = (WallVo* )this->wallAry->objectAtIndex(i);
+		wVo->height -= wVo->vy;
+	}
 }

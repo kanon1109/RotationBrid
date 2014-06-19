@@ -13,5 +13,7 @@ public:
 	float height;
 	//宽度
 	float width;
+	//纵向速度
+	float vy;
 };
 #endif // !1
