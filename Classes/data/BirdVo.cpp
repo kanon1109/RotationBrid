@@ -2,19 +2,19 @@
 
 BirdVo::BirdVo(void)
 {
-	this->angleSpeed = 0;
-	this->angleSpeedAdd = 1;
+	this->angle = 0;
+	this->x = 0;
+	this->y = 0;
 	this->vx = 0;
 	this->vy = 0;
+	this->g = .4f;
 }
 
 BirdVo::~BirdVo(void)
 {
 }
 
-void BirdVo::update()
+void BirdVo::jump()
 {
-	this->angleSpeed += this->angleSpeedAdd;
-	this->x += this->vx;
-	this->y += this->vy;
+	this->vy = -4;
 }

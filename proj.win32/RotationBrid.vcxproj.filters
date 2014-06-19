@@ -13,6 +13,9 @@
     <Filter Include="Classes\data">
       <UniqueIdentifier>{64939107-f04d-43be-8c1c-1587ce52e059}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Classes\utils">
+      <UniqueIdentifier>{4e871663-a9d4-4e3b-9b0b-244d4c6ccd65}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -27,6 +30,12 @@
     <ClCompile Include="..\Classes\data\BirdVo.cpp">
       <Filter>Classes\data</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\RotationBrid.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\utils\ColorUtil.cpp">
+      <Filter>Classes\utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -40,6 +49,12 @@
     </ClInclude>
     <ClInclude Include="..\Classes\data\BirdVo.h">
       <Filter>Classes\data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\RotationBrid.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\utils\ColorUtil.h">
+      <Filter>Classes\utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
