@@ -29,7 +29,7 @@ GameStage::GameStage()
 	Sprite* bridSpt = Sprite::create("brid.png");
 	bridSpt->setTag(0);
 	container->addChild(bridSpt);
-
+	
 	this->rotationBrid = RotationBrid::create();
 	this->rotationBrid->retain();
 

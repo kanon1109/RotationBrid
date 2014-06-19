@@ -9,10 +9,6 @@ public:
 	WallVo();
 	~WallVo();
 	CREATE_FUNC(WallVo);
-	//高度
-	float height;
-	//宽度
-	float width;
 	//纵向速度
 	float vy;
 };
