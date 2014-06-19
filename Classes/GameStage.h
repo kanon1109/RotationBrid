@@ -17,6 +17,5 @@ private:
 	//‰÷»æ
 	void render();
 	RotationBrid* rotationBrid;
-	float angle = 0;
 };
 #endif

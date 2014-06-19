@@ -1,5 +1,5 @@
 #include "RotationBrid.h"
-
+#include "data/WallVo.h"
 RotationBrid::RotationBrid()
 {
 	this->initData();
@@ -16,8 +16,18 @@ void RotationBrid::initData()
 	this->bVo = BirdVo::create();
 	this->bVo->x = 0;
 	this->bVo->y = 200;
-	this->bVo->vx = 8;
+	this->bVo->vx = 10;
 	this->bVo->retain();
+
+	this->wallAry = Array::create();
+	this->wallAry->retain();
+
+	this->wallCount = 4;
+	for (int i = 0; i < this->wallCount; ++i)
+	{
+		WallVo* wVo = WallVo::create();
+		this->wallAry->addObject(wVo);
+	}
 }
 
 void RotationBrid::update()

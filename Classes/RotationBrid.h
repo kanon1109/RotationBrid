@@ -20,5 +20,9 @@ private:
 	void initData();
 	//地面高度
 	float floorPosY;
+	//墙壁的数量
+	int wallCount;
+	//墙壁数组
+	Array* wallAry;
 };
 #endif

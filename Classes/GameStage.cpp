@@ -2,18 +2,21 @@
 #include "utils/ColorUtil.h"
 GameStage::GameStage()
 {
-	this->angle = 1;
-
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	//绘制背景
 	Vec2 points[] = { Vec2(0, 0), Vec2(0, visibleSize.height), 
 					Vec2(visibleSize.width, visibleSize.height),
 					Vec2(visibleSize.width, 0)};
 	DrawNode* draw = DrawNode::create();
+	//背景
 	draw->drawPolygon(points, 4, ColorUtil::getColor4F(0x00 , 0xAD , 0xFF, 0xFF),
 							4, ColorUtil::getColor4F(0x00, 0xAD, 0xFF, 0xFF));
-
-	draw->drawDot(Vec2(visibleSize.width*.5, visibleSize.height*.5), 280, ColorUtil::getColor4F(0xFF, 0xFF, 0xFF, 0xFF));
+	//白色大园
+	draw->drawDot(Vec2(visibleSize.width*.5, visibleSize.height*.5), 280,
+							ColorUtil::getColor4F(0xFF, 0xFF, 0xFF, 0xFF));
+	//中间蓝色小圆形
+	draw->drawDot(Vec2(visibleSize.width*.5, visibleSize.height*.5), 80,
+						ColorUtil::getColor4F(0x00, 0xAD, 0xFF, 0xFF));
 	this->addChild(draw);
 
 	Node* container = Node::create();
@@ -36,7 +39,6 @@ GameStage::GameStage()
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(listener, 1);
 
 	
-	//DrawPrimitives::drawRect(Vec2(0, 0), Vec2(visibleSize.width, visibleSize.height));
 	this->schedule(schedule_selector(GameStage::loop), .03f);
 }
 
