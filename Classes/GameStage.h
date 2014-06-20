@@ -16,7 +16,10 @@ private:
 	void loop(float dt);
 	//渲染
 	void render();
+	//旋转小鸟
 	RotationBrid* rotationBrid;
+	//调试绘制
+	DrawNode* debugNode;
 	//墙壁的枚举
 	enum tag
 	{

@@ -85,6 +85,10 @@ GameStage::GameStage()
 	listener->onTouchBegan = CC_CALLBACK_1(GameStage::onTouchBegan, this);
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(listener, 1);
 
+	this->debugNode = DrawNode::create();
+	this->debugNode->drawDot(Vec2(0, 0), 10, ColorUtil::getColor4F(0xFF, 0x00, 0x00, 0xFF));
+	this->addChild(this->debugNode);
+
 	this->schedule(schedule_selector(GameStage::loop), .03f);
 }
 
@@ -107,15 +111,23 @@ void GameStage::loop(float dt)
 void GameStage::render()
 {
 	Node* container = (Node*)this->getChildByTag(1);
-	container->setRotation(this->rotationBrid->angle);
+	//container->setRotation(this->rotationBrid->angle);
 
 	Node* wallContainer = (Node*)this->getChildByTag(2);
-	wallContainer->setRotation(-this->rotationBrid->angle * .5);
+	//wallContainer->setRotation(-this->rotationBrid->angle * .5);
 
 	Sprite* bridSpt = (Sprite*)container->getChildByTag(0);
 	bridSpt->setPositionX(this->rotationBrid->bVo->x);
 	bridSpt->setPositionY(this->rotationBrid->bVo->y);
 	bridSpt->setRotation(this->rotationBrid->bVo->angle);
+
+	Vec2 v2d = bridSpt->getParent()->convertToWorldSpace(bridSpt->getPosition());
+	Rect bridRect = CCRectMake(v2d.x - bridSpt->getContentSize().width * .5,
+							   v2d.y - bridSpt->getContentSize().height * .5,
+							   bridSpt->getContentSize().width,
+							   bridSpt->getContentSize().height);
+
+	//this->debugNode->setPosition(Point(v2d.x, v2d.y));
 
 	int count = this->rotationBrid->wallAry->count();
 	for (int i = 0; i < count; ++i)
@@ -123,5 +135,23 @@ void GameStage::render()
 		WallVo* wVo = (WallVo* )this->rotationBrid->wallAry->objectAtIndex(i);
 		DrawNode* wall = (DrawNode*)wallContainer->getChildByTag(wallTag + i);
 		wall->setScaleY(wVo->scaleY);
+		v2d = wall->getParent()->convertToWorldSpace(wall->getPosition());
+
+		Rect wallRect = CCRectMake(v2d.x - wall->getContentSize().width * .5, 
+								   v2d.y,
+									wall->getContentSize().width,
+									wall->getContentSize().height);
+		CCLOG("index %i", i);
+		CCLOG("height %f", wall->getContentSize().height);
+		if (i == 2)
+		{
+			this->debugNode->setPosition(Point(v2d.x, v2d.y + wall->getContentSize().height));
+		}
+			
+
+		if (bridRect.intersectsRect(wallRect))
+		{
+			CCLOG("hit");
+		}
 	}
 }
