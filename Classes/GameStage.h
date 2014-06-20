@@ -17,5 +17,10 @@ private:
 	//Джх╬
 	void render();
 	RotationBrid* rotationBrid;
+	//г╫╠з╣дц╤╬ы
+	enum tag
+	{
+		wallTag = 3
+	};
 };
 #endif

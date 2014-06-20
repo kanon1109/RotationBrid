@@ -1,5 +1,6 @@
 #include "RotationBrid.h"
 #include "data/WallVo.h"
+#include "utils/Random.h"
 RotationBrid::RotationBrid()
 {
 	this->initData();
@@ -22,12 +23,12 @@ void RotationBrid::initData()
 	this->wallAry = Array::create();
 	this->wallAry->retain();
 
-	this->wallCount = 4;
+	this->wallCount = 8;
 	for (int i = 0; i < this->wallCount; ++i)
 	{
 		WallVo* wVo = WallVo::create();
-		wVo->width = 30;
-		wVo->height = 130;
+		wVo->minRangeScaleY = 0.7;
+		wVo->maxRangeScaleY = 1.3;
 		this->wallAry->addObject(wVo);
 	}
 }
@@ -44,6 +45,12 @@ void RotationBrid::update()
 	for (int i = 0; i < this->wallCount; ++i)
 	{
 		WallVo* wVo = (WallVo* )this->wallAry->objectAtIndex(i);
-		wVo->height -= wVo->vy;
+		if (wVo->scaleY > wVo->maxRangeScaleY || 
+			wVo->scaleY < wVo->minRangeScaleY) 
+			wVo->vy = -wVo->vy;
+		if (i % 2 == 0)
+			wVo->scaleY += wVo->vy;
+		else
+			wVo->scaleY -= wVo->vy;
 	}
 }

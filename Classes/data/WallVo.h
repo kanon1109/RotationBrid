@@ -11,5 +11,11 @@ public:
 	CREATE_FUNC(WallVo);
 	//纵向速度
 	float vy;
+	//横向缩放
+	float scaleY;
+	//最小scaleY范围
+	float minRangeScaleY;
+	//最大scaleY范围
+	float maxRangeScaleY;
 };
 #endif // !1

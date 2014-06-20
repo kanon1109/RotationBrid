@@ -12,6 +12,8 @@ public:
 	CREATE_FUNC(RotationBrid);
 	//小鸟数据
 	BirdVo* bVo;
+	//墙壁数组
+	Array* wallAry;
 	//舞台角度
 	float angle;
 	//更新
@@ -22,7 +24,5 @@ private:
 	float floorPosY;
 	//墙壁的数量
 	int wallCount;
-	//墙壁数组
-	Array* wallAry;
 };
 #endif

@@ -39,6 +39,9 @@
     <ClCompile Include="..\Classes\data\WallVo.cpp">
       <Filter>Classes\data</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\utils\Random.cpp">
+      <Filter>Classes\utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -61,6 +64,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\data\WallVo.h">
       <Filter>Classes\data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\utils\Random.h">
+      <Filter>Classes\utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -3,7 +3,8 @@
 
 WallVo::WallVo()
 {
-	this->vy = 0;
+	this->vy = .005f;
+	this->scaleY = 1;
 }
 
 
