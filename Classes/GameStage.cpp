@@ -48,7 +48,8 @@ GameStage::GameStage()
 	{
 		//绘制墙壁
 		DrawNode* wall = DrawNode::create();
-		wall->setAnchorPoint(Point(.5, 0));
+		wall->setAnchorPoint(Point(0, 0));
+		wall->setContentSize(CCSizeMake(width, height));
 		wall->drawPolygon(wallPoints, 5, ColorUtil::getColor4F(0x00, 0xAD, 0xFF, 0xFF),
 										0, ColorUtil::getColor4F(0x00, 0xAD, 0xFF, 0xFF));
 		wall->setTag(wallTag + i);
@@ -58,7 +59,6 @@ GameStage::GameStage()
 			float y = sin((index * 90) * M_PI / 180) * r;
 			float angle = atan2(y, x) * 180 / M_PI + 90;
 			if (index % 2 == 0) angle = -angle;
-			CCLOG("angle %f", angle);
 			wall->setPosition(x, y);
 			wall->setRotation(angle);
 			index++;
@@ -110,24 +110,19 @@ void GameStage::loop(float dt)
 
 void GameStage::render()
 {
+	//旋转小鸟和墙壁容器
 	Node* container = (Node*)this->getChildByTag(1);
-	//container->setRotation(this->rotationBrid->angle);
-
+	container->setRotation(this->rotationBrid->angle);
 	Node* wallContainer = (Node*)this->getChildByTag(2);
-	//wallContainer->setRotation(-this->rotationBrid->angle * .5);
+	wallContainer->setRotation(-this->rotationBrid->angle * .5);
 
+	//更新小鸟的位置和角度
 	Sprite* bridSpt = (Sprite*)container->getChildByTag(0);
 	bridSpt->setPositionX(this->rotationBrid->bVo->x);
 	bridSpt->setPositionY(this->rotationBrid->bVo->y);
 	bridSpt->setRotation(this->rotationBrid->bVo->angle);
 
-	Vec2 v2d = bridSpt->getParent()->convertToWorldSpace(bridSpt->getPosition());
-	Rect bridRect = CCRectMake(v2d.x - bridSpt->getContentSize().width * .5,
-							   v2d.y - bridSpt->getContentSize().height * .5,
-							   bridSpt->getContentSize().width,
-							   bridSpt->getContentSize().height);
-
-	//this->debugNode->setPosition(Point(v2d.x, v2d.y));
+	
 
 	int count = this->rotationBrid->wallAry->count();
 	for (int i = 0; i < count; ++i)
@@ -135,23 +130,38 @@ void GameStage::render()
 		WallVo* wVo = (WallVo* )this->rotationBrid->wallAry->objectAtIndex(i);
 		DrawNode* wall = (DrawNode*)wallContainer->getChildByTag(wallTag + i);
 		wall->setScaleY(wVo->scaleY);
-		v2d = wall->getParent()->convertToWorldSpace(wall->getPosition());
+		
+		vector<Vec2> vect;
+		GameStage::getSpriteVertex(vect, wall);
 
-		Rect wallRect = CCRectMake(v2d.x - wall->getContentSize().width * .5, 
-								   v2d.y,
-									wall->getContentSize().width,
-									wall->getContentSize().height);
-		CCLOG("index %i", i);
-		CCLOG("height %f", wall->getContentSize().height);
-		if (i == 2)
+		if(i == 2)
 		{
-			this->debugNode->setPosition(Point(v2d.x, v2d.y + wall->getContentSize().height));
-		}
-			
-
-		if (bridRect.intersectsRect(wallRect))
-		{
-			CCLOG("hit");
+			this->debugNode->setPosition(vect.at(0));
 		}
 	}
+}
+
+void GameStage::getSpriteVertex( vector<Vec2> &vect, Node* spt )
+{
+	Point p1 = Point(spt->getPositionX() - spt->getContentSize().width * .5, 
+		spt->getPositionY() - spt->getContentSize().height * .5);
+
+	Point p2 = Point(spt->getPositionX() - spt->getContentSize().width * .5, 
+		spt->getPositionY() + spt->getContentSize().height * .5);
+
+	Point p3 = Point(spt->getPositionX() + spt->getContentSize().width * .5, 
+		spt->getPositionY() + spt->getContentSize().height * .5);
+
+	Point p4 = Point(spt->getPositionX() + spt->getContentSize().width * .5, 
+		spt->getPositionY() - spt->getContentSize().height * .5);
+
+	Vec2 v2d1 = spt->getParent()->convertToWorldSpace(p1);
+	Vec2 v2d2 = spt->getParent()->convertToWorldSpace(p2);
+	Vec2 v2d3 = spt->getParent()->convertToWorldSpace(p3);
+	Vec2 v2d4 = spt->getParent()->convertToWorldSpace(p4);
+
+	vect.push_back(v2d1);
+	vect.push_back(v2d2);
+	vect.push_back(v2d3);
+	vect.push_back(v2d4);
 }

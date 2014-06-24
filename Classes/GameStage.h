@@ -3,6 +3,7 @@
 #define _GAME_STAGE_
 #include "cocos2d.h"
 #include "RotationBrid.h"
+using namespace std;
 USING_NS_CC;
 class GameStage:public Scene
 {
@@ -20,6 +21,14 @@ private:
 	RotationBrid* rotationBrid;
 	//调试绘制
 	DrawNode* debugNode;
+
+	//************************************
+	// Method:    getSpriteVertex			根据sprite获取顶点坐标数组
+	// Parameter: vector<Vec2>& vect		顶点坐标数组（顺时针）
+	// Parameter: Node * spt				显示对象
+	//************************************
+	void getSpriteVertex(vector<Vec2> &vect, Node* spt);
+
 	//墙壁的枚举
 	enum tag
 	{

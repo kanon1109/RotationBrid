@@ -42,6 +42,9 @@
     <ClCompile Include="..\Classes\utils\Random.cpp">
       <Filter>Classes\utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\utils\MathUtil.cpp">
+      <Filter>Classes\utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -66,6 +69,9 @@
       <Filter>Classes\data</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\utils\Random.h">
+      <Filter>Classes\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\utils\MathUtil.h">
       <Filter>Classes\utils</Filter>
     </ClInclude>
   </ItemGroup>
