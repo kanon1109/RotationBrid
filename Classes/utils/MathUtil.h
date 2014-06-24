@@ -5,11 +5,10 @@
 #include "cocos2d.h"
 USING_NS_CC;
 using namespace std;
-using std::vector;
 #ifndef CC_PLATFORM_WIN32
 #include <math.h>
 #endif
-namespace RotationBrid
+namespace brid
 {
 class MathUtil
 {

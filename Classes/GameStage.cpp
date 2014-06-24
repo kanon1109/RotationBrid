@@ -1,7 +1,9 @@
 #include "GameStage.h"
 #include "utils/ColorUtil.h"
 #include "utils/Random.h"
+#include "utils/MathUtil.h"
 #include "data/WallVo.h"
+using namespace brid;
 GameStage::GameStage()
 {
 	//初始化随机种子
@@ -112,9 +114,9 @@ void GameStage::render()
 {
 	//旋转小鸟和墙壁容器
 	Node* container = (Node*)this->getChildByTag(1);
-	container->setRotation(this->rotationBrid->angle);
+	//container->setRotation(this->rotationBrid->angle);
 	Node* wallContainer = (Node*)this->getChildByTag(2);
-	wallContainer->setRotation(-this->rotationBrid->angle * .5);
+	//wallContainer->setRotation(-this->rotationBrid->angle * .5);
 
 	//更新小鸟的位置和角度
 	Sprite* bridSpt = (Sprite*)container->getChildByTag(0);
@@ -122,7 +124,8 @@ void GameStage::render()
 	bridSpt->setPositionY(this->rotationBrid->bVo->y);
 	bridSpt->setRotation(this->rotationBrid->bVo->angle);
 
-	
+	vector<Vec2> bridVect;
+	GameStage::getSpriteVertex(bridVect, bridSpt);
 
 	int count = this->rotationBrid->wallAry->count();
 	for (int i = 0; i < count; ++i)
@@ -131,12 +134,25 @@ void GameStage::render()
 		DrawNode* wall = (DrawNode*)wallContainer->getChildByTag(wallTag + i);
 		wall->setScaleY(wVo->scaleY);
 		
-		vector<Vec2> vect;
-		GameStage::getSpriteVertex(vect, wall);
+		vector<Vec2> wallVect;
+		GameStage::getSpriteVertex(wallVect, wall);
+
+		for (unsigned int i = 0; i < bridVect.size(); ++i)
+		{
+			Vec2 bridV2d = bridVect.at(i);
+			if(brid::MathUtil::isInsideSquare(wallVect.at(0), 
+											  wallVect.at(1), 
+											  wallVect.at(2), 
+											  wallVect.at(3), 
+											  bridV2d))
+			{
+				CCLOG("hit");
+			}	
+		}
 
 		if(i == 2)
 		{
-			this->debugNode->setPosition(vect.at(0));
+			this->debugNode->setPosition(wallVect.at(2));
 		}
 	}
 }

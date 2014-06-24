@@ -1,16 +1,16 @@
 #include <MathUtil.h>
 #include <math.h>
 
-RotationBrid::MathUtil::MathUtil()
+brid::MathUtil::MathUtil()
 {
 }
 
 
-RotationBrid::MathUtil::~MathUtil()
+brid::MathUtil::~MathUtil()
 {
 }
 
-float RotationBrid::MathUtil::fixNumber(float num, float min, float range)
+float brid::MathUtil::fixNumber(float num, float min, float range)
 {
 	(float)num = (int)num % (int)range;
 	if (num < min)
@@ -18,43 +18,43 @@ float RotationBrid::MathUtil::fixNumber(float num, float min, float range)
 	return num;
 }
 
-float RotationBrid::MathUtil::fixAngle(float angle)
+float brid::MathUtil::fixAngle(float angle)
 {
-	return RotationBrid::MathUtil::fixNumber(angle, 0, 360);
+	return brid::MathUtil::fixNumber(angle, 0, 360);
 }
 
-unsigned int RotationBrid::MathUtil::getFactorial(unsigned int num)
+unsigned int brid::MathUtil::getFactorial(unsigned int num)
 {
 	if (num == 0) return 1;
-	return num * RotationBrid::MathUtil::getFactorial(num - 1);
+	return num * brid::MathUtil::getFactorial(num - 1);
 }
 
-float RotationBrid::MathUtil::getSlope(float x1, float x2, float y1, float y2)
+float brid::MathUtil::getSlope(float x1, float x2, float y1, float y2)
 {
 	float slope = (y1 - y2) / (x1 - x2);
 	return slope;
 }
 
-float RotationBrid::MathUtil::rds2dgs(float radians)
+float brid::MathUtil::rds2dgs(float radians)
 {
 	return fixAngle(radians * 180 / M_PI);
 }
 
-float RotationBrid::MathUtil::dgs2rds(float degrees)
+float brid::MathUtil::dgs2rds(float degrees)
 {
 	return degrees * M_PI / 180;
 }
 
-void RotationBrid::MathUtil::threeSidesMathAngle(vector<float>&vect, float a, float b, float c)
+void brid::MathUtil::threeSidesMathAngle(vector<float>&vect, float a, float b, float c)
 {
 	float cosA = (c * c + b * b - a * a) / (2 * b * c);
-	float A = RotationBrid::MathUtil::rds2dgs(acos(cosA));
+	float A = brid::MathUtil::rds2dgs(acos(cosA));
 
 	float cosB = (a * a + c * c - b * b) / (2 * a * c);
-	float B = RotationBrid::MathUtil::rds2dgs(acos(cosB));
+	float B = brid::MathUtil::rds2dgs(acos(cosB));
 
 	float cosC = (a * a + b * b - c * c) / (2 * a * b);
-	float C = RotationBrid::MathUtil::rds2dgs(acos(cosC));
+	float C = brid::MathUtil::rds2dgs(acos(cosC));
 
 	vect.clear();
 	vect.push_back(A);
@@ -62,7 +62,7 @@ void RotationBrid::MathUtil::threeSidesMathAngle(vector<float>&vect, float a, fl
 	vect.push_back(C);
 }
 
-void RotationBrid::MathUtil::rotate(vector<float>&vect, float cx, float cy, 
+void brid::MathUtil::rotate(vector<float>&vect, float cx, float cy, 
 									float tx, float ty, 
 									float angle, bool reverse)
 {
@@ -70,8 +70,8 @@ void RotationBrid::MathUtil::rotate(vector<float>&vect, float cx, float cy,
 	float y;
 	float dx = tx - cx;
 	float dy = ty - cy;
-	float c = cos(RotationBrid::MathUtil::dgs2rds(angle));
-	float s = sin(RotationBrid::MathUtil::dgs2rds(angle));
+	float c = cos(brid::MathUtil::dgs2rds(angle));
+	float s = sin(brid::MathUtil::dgs2rds(angle));
 	if (reverse)
 	{
 		x = dx * c + dy * s + cx;
@@ -87,17 +87,17 @@ void RotationBrid::MathUtil::rotate(vector<float>&vect, float cx, float cy,
 	vect.push_back(y);
 }
 
-float RotationBrid::MathUtil::sineLaw( float angle, float line )
+float brid::MathUtil::sineLaw( float angle, float line )
 {
 	return line / sin(angle) / 2;
 }
 
-Point RotationBrid::MathUtil::triangleCentroid( Point a, Point b, Point c )
+Point brid::MathUtil::triangleCentroid( Point a, Point b, Point c )
 {
 	return ccp((a.x + b.x + c.x) / 3, (a.y + b.y + c.y) / 3);
 }
 
-unsigned int RotationBrid::MathUtil::arithmeticSequenceIndex( unsigned int sn, unsigned int d )
+unsigned int brid::MathUtil::arithmeticSequenceIndex( unsigned int sn, unsigned int d )
 {
 	//前n项和公式为：Sn=n×a1+n×(n-1)×(d/2); 
 	//等差数列分解因式公式
@@ -111,13 +111,13 @@ unsigned int RotationBrid::MathUtil::arithmeticSequenceIndex( unsigned int sn, u
 	return ( -b + sqrt(b * b - (4 * a * c))) / (2 * a);
 }
 
-float RotationBrid::MathUtil::arithmeticSequenceIndexValue( unsigned int sn, unsigned int d )
+float brid::MathUtil::arithmeticSequenceIndexValue( unsigned int sn, unsigned int d )
 {
-	unsigned int n = RotationBrid::MathUtil::arithmeticSequenceIndex(sn, d);
+	unsigned int n = brid::MathUtil::arithmeticSequenceIndex(sn, d);
 	return (n + 1) * d - (d - 1);
 }
 
-Point RotationBrid::MathUtil::triangleCircumscribedCircleCenter( Point a, Point b, Point c )
+Point brid::MathUtil::triangleCircumscribedCircleCenter( Point a, Point b, Point c )
 {
 	float axp =  pow(a.x, 2);
 	float bxp =  pow(b.x, 2);
@@ -135,17 +135,17 @@ Point RotationBrid::MathUtil::triangleCircumscribedCircleCenter( Point a, Point 
 	return ccp(x, y);
 }
 
-float RotationBrid::MathUtil::distance( float x1, float y1, float x2, float y2 )
+float brid::MathUtil::distance( float x1, float y1, float x2, float y2 )
 {
 	return sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
 }
 
-unsigned int RotationBrid::MathUtil::getIntLength( unsigned int num )
+unsigned int brid::MathUtil::getIntLength( unsigned int num )
 {
 	return log10(num) + 1;
 }
 
-bool RotationBrid::MathUtil::isInsideTriangle( Point a, Point b, Point c, Point p )
+bool brid::MathUtil::isInsideTriangle( Point a, Point b, Point c, Point p )
 {
 	float planeAB = (a.x - p.x) * (b.y - p.y) - (b.x - p.x) * (a.y - p.y);
 	float planeBC = (b.x - p.x) * (c.y - p.y) - (c.x - p.x) * (b.y - p.y);
@@ -153,17 +153,17 @@ bool RotationBrid::MathUtil::isInsideTriangle( Point a, Point b, Point c, Point 
 	return sign(planeAB) == sign(planeBC) && sign(planeBC) == sign(planeCA);
 }
 
-int RotationBrid::MathUtil::sign( float n )
+int brid::MathUtil::sign( float n )
 {
 	return abs(n) / n;
 }
 
-float RotationBrid::MathUtil::triangleArea( Point a, Point b, Point c )
+float brid::MathUtil::triangleArea( Point a, Point b, Point c )
 {
 	return (c.x * b.y - b.x * c.y) - (c.x * a.y - a.x * c.y) + (b.x * a.y - a.x * b.y);
 }
 
-bool RotationBrid::MathUtil::isInsideSquare( Point a, Point b, Point c, Point d, Point p )
+bool brid::MathUtil::isInsideSquare( Point a, Point b, Point c, Point d, Point p )
 {
 	if (triangleArea(a, b, p) > 0 || 
 		triangleArea(b, c, p) > 0 || 
