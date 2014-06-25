@@ -17,7 +17,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto glview = director->getOpenGLView();
     if(!glview) {
         glview = GLView::create("RotationBrid");
-		glview->setFrameSize(640, 960);
+		glview->setFrameSize(960, 800);
         director->setOpenGLView(glview);
     }
 

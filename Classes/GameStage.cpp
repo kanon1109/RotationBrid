@@ -74,6 +74,11 @@ GameStage::GameStage()
 		}
 		
 		wallContainer->addChild(wall);
+		if(i == 6) 
+		{
+			Point pp = wall->getParent()->convertToWorldSpace(wall->getPosition());
+			CCLOG("pp.x, pp.y %f %f", pp.x, pp.y);
+		}
 	}
 
 	Node* bridContainer = Node::create();
@@ -168,6 +173,13 @@ void GameStage::render()
 		if (i == 6)
 		{
 			CCLOG("wall %f", wall->getRotation());
+			CCLOG("wallVect.at(0) %f %f", wallVect.at(0).x, wallVect.at(0).y);
+			CCLOG("wallVect.at(1) %f %f", wallVect.at(1).x, wallVect.at(1).y);
+			CCLOG("wallVect.at(2) %f %f", wallVect.at(2).x, wallVect.at(2).y);
+			CCLOG("wallVect.at(3) %f %f", wallVect.at(3).x, wallVect.at(3).y);
+
+			CCLOG("wall getPositionX %f %f", wall->getPositionX(), wall->getPositionY());
+
 			Vec2 wallPoints[] = { wallVect.at(0), wallVect.at(1),
 								  wallVect.at(2), wallVect.at(3) };
 			this->debugNode->drawPolygon(wallPoints, 4, ColorUtil::getColor4F(0x00, 0xAD, 0xFF, 0x00),
