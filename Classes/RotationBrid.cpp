@@ -48,9 +48,9 @@ void RotationBrid::update()
 		if (wVo->scaleY > wVo->maxRangeScaleY || 
 			wVo->scaleY < wVo->minRangeScaleY) 
 			wVo->vy = -wVo->vy;
-		if (i % 2 == 0)
+		/*if (i % 2 == 0)
 			wVo->scaleY += wVo->vy;
 		else
-			wVo->scaleY -= wVo->vy;
+			wVo->scaleY -= wVo->vy;*/
 	}
 }
