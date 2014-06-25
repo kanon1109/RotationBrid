@@ -121,10 +121,9 @@ public:
 	* @param	vect		坐标vect
 	* @param	cx			中心点x坐标
 	* @param	cy			中心点y坐标
-	* @param	x			需要旋转的物体的x坐标
-	* @param	y			需要旋转的物体的y坐标
-	* @param	sin			sin(旋转角度);
-	* @param	cos			cos(旋转角度);
+	* @param	tx			需要旋转的物体的x坐标
+	* @param	ty			需要旋转的物体的y坐标
+	* @param	angle		旋转角度
 	* @param	reverse		是否逆时针旋转
 	*/
 	static void MathUtil::rotate(vector<float>&vect, float cx, float cy,

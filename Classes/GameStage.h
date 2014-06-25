@@ -23,16 +23,28 @@ private:
 	DrawNode* debugNode;
 
 	//************************************
-	// Method:    getSpriteVertex			根据sprite获取顶点坐标数组
+	// Method:    getBridVertex				根据brid获取顶点坐标数组
 	// Parameter: vector<Vec2>& vect		顶点坐标数组（顺时针）
 	// Parameter: Node * spt				显示对象
 	//************************************
-	void getSpriteVertex(vector<Vec2> &vect, Node* spt);
+	void getBridVertex(vector<Vec2> &vect, Node* spt);
+
+	//************************************
+	// Description:	获取墙壁的顶点坐标数组
+	// Parameter: vector<Vec2> & vect	顶点坐标数组（顺时针）
+	// Parameter: Node * spt			显示对象
+	// Returns:   void
+	//************************************
+	void getWallVertex(vector<Vec2> &vect, Node* spt);
 
 	//墙壁的枚举
 	enum tag
 	{
 		wallTag = 3
 	};
+	//墙壁的宽度
+	float wallWidth;
+	//墙壁的高度
+	float wallHeight;
 };
 #endif

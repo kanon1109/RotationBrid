@@ -40,23 +40,24 @@ GameStage::GameStage()
 	int count = this->rotationBrid->wallAry->count();
 	//半径
 	float r = 360;
-	float width = 25;
-	float height = 150;
-	Vec2 wallPoints[] = { Vec2(-width / 2, 0), Vec2(-width / 2, height),
-							Vec2(width / 2, height), Vec2(width / 2, 0),
-							Vec2(-width / 2, 0) };
+	this->wallWidth = 25;
+	this->wallHeight = 150;
+	Vec2 wallPoints[] = { Vec2(-this->wallWidth / 2, 0), Vec2(-this->wallWidth / 2, this->wallHeight),
+							Vec2(this->wallWidth / 2, this->wallHeight), Vec2(this->wallWidth / 2, 0),
+							Vec2(-this->wallWidth / 2, 0) };
 	int index = 0;
 	for (int i = 0; i < count; ++i)
 	{
 		//绘制墙壁
 		DrawNode* wall = DrawNode::create();
 		wall->setAnchorPoint(Point(0, 0));
-		wall->setContentSize(CCSizeMake(width, height));
-		wall->drawPolygon(wallPoints, 5, ColorUtil::getColor4F(0x00, 0xAD, 0xFF, 0xFF),
+		wall->setContentSize(CCSizeMake(this->wallWidth, this->wallHeight));
+		wall->drawPolygon(wallPoints, 5, ColorUtil::getColor4F(0x00, 0xDA, 0xFF, 0xFF),
 										0, ColorUtil::getColor4F(0x00, 0xAD, 0xFF, 0xFF));
 		wall->setTag(wallTag + i);
 		if (i % 2 == 0)
 		{
+			//外圈
 			float x = cos((index * 90) * M_PI / 180) * r;
 			float y = sin((index * 90) * M_PI / 180) * r;
 			float angle = atan2(y, x) * 180 / M_PI + 90;
@@ -67,6 +68,7 @@ GameStage::GameStage()
 		}
 		else
 		{
+			//内圈
 			wall->setRotation((i / 2) * 90);
 		}
 		wallContainer->addChild(wall);
@@ -76,7 +78,7 @@ GameStage::GameStage()
 	bridContainer->setTag(1);
 	bridContainer->setAnchorPoint(Point(.5f, .5f));
 	bridContainer->setPosition(Point(Director::getInstance()->getVisibleSize().width * .5,
-		Director::getInstance()->getVisibleSize().height * .5));
+								 	 Director::getInstance()->getVisibleSize().height * .5));
 	Sprite* bridSpt = Sprite::create("brid.png");
 	bridSpt->setTag(0);
 	bridContainer->addChild(bridSpt);
@@ -88,7 +90,7 @@ GameStage::GameStage()
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(listener, 1);
 
 	this->debugNode = DrawNode::create();
-	this->debugNode->drawDot(Vec2(0, 0), 10, ColorUtil::getColor4F(0xFF, 0x00, 0x00, 0xFF));
+	this->debugNode->drawDot(Vec2(0, 0), 3, ColorUtil::getColor4F(0xFF, 0x00, 0x00, 0xFF));
 	this->addChild(this->debugNode);
 
 	this->schedule(schedule_selector(GameStage::loop), .03f);
@@ -114,9 +116,9 @@ void GameStage::render()
 {
 	//旋转小鸟和墙壁容器
 	Node* container = (Node*)this->getChildByTag(1);
-	//container->setRotation(this->rotationBrid->angle);
+	container->setRotation(this->rotationBrid->angle);
 	Node* wallContainer = (Node*)this->getChildByTag(2);
-	//wallContainer->setRotation(-this->rotationBrid->angle * .5);
+	wallContainer->setRotation(-this->rotationBrid->angle * .5);
 
 	//更新小鸟的位置和角度
 	Sprite* bridSpt = (Sprite*)container->getChildByTag(0);
@@ -125,51 +127,117 @@ void GameStage::render()
 	bridSpt->setRotation(this->rotationBrid->bVo->angle);
 
 	vector<Vec2> bridVect;
-	GameStage::getSpriteVertex(bridVect, bridSpt);
+	GameStage::getBridVertex(bridVect, bridSpt);
 
+	this->debugNode->clear();
+
+	Vec2 bridPoints[] = { bridVect.at(0), bridVect.at(1),
+							bridVect.at(2), bridVect.at(3) };
+	this->debugNode->drawPolygon(bridPoints, 4, ColorUtil::getColor4F(0x00, 0xAD, 0xFF, 0x00),
+												1, ColorUtil::getColor4F(0xFF, 0x00, 0x00, 0xFF));
 	int count = this->rotationBrid->wallAry->count();
 	for (int i = 0; i < count; ++i)
 	{
 		WallVo* wVo = (WallVo* )this->rotationBrid->wallAry->objectAtIndex(i);
 		DrawNode* wall = (DrawNode*)wallContainer->getChildByTag(wallTag + i);
+		float newHeight = (float)(this->wallHeight * wVo->scaleY);
 		wall->setScaleY(wVo->scaleY);
+		wall->setContentSize(CCSizeMake(wall->getContentSize().width, newHeight));
 		
-		vector<Vec2> wallVect;
-		GameStage::getSpriteVertex(wallVect, wall);
 
-		for (unsigned int i = 0; i < bridVect.size(); ++i)
+		vector<Vec2> wallVect;
+		GameStage::getWallVertex(wallVect, wall);
+
+		for (unsigned int j = 0; j < bridVect.size(); ++j)
 		{
-			Vec2 bridV2d = bridVect.at(i);
+			Vec2 bridV2d = bridVect.at(j);
+			this->debugNode->drawDot(bridV2d, 3, ColorUtil::getColor4F(0xFF, 0x00, 0x00, 0xFF));
+
 			if(brid::MathUtil::isInsideSquare(wallVect.at(0), 
 											  wallVect.at(1), 
 											  wallVect.at(2), 
 											  wallVect.at(3), 
 											  bridV2d))
 			{
-				CCLOG("hit");
+				CCLOG("hit %i %i", i, j);
+				break;
 			}	
 		}
-
-		if(i == 2)
+		
+		if (i == 2 || i == 6)
 		{
-			this->debugNode->setPosition(wallVect.at(2));
+			CCLOG("newHeight %f", newHeight);
+			Vec2 wallPoints[] = { wallVect.at(0), wallVect.at(1),
+				wallVect.at(2), wallVect.at(3) };
+			this->debugNode->drawPolygon(wallPoints, 4, ColorUtil::getColor4F(0x00, 0xAD, 0xFF, 0x00),
+				1, ColorUtil::getColor4F(0xFF, 0x00, 0x00, 0xFF));
 		}
+		
+		wallVect.clear();
 	}
 }
 
-void GameStage::getSpriteVertex( vector<Vec2> &vect, Node* spt )
+void GameStage::getBridVertex( vector<Vec2> &vect, Node* spt )
 {
+	float angle = spt->getRotation();
+
 	Point p1 = Point(spt->getPositionX() - spt->getContentSize().width * .5, 
-		spt->getPositionY() - spt->getContentSize().height * .5);
+					spt->getPositionY() - spt->getContentSize().height * .5);
 
 	Point p2 = Point(spt->getPositionX() - spt->getContentSize().width * .5, 
-		spt->getPositionY() + spt->getContentSize().height * .5);
+					spt->getPositionY() + spt->getContentSize().height * .5);
 
 	Point p3 = Point(spt->getPositionX() + spt->getContentSize().width * .5, 
-		spt->getPositionY() + spt->getContentSize().height * .5);
+					spt->getPositionY() + spt->getContentSize().height * .5);
 
 	Point p4 = Point(spt->getPositionX() + spt->getContentSize().width * .5, 
-		spt->getPositionY() - spt->getContentSize().height * .5);
+					spt->getPositionY() - spt->getContentSize().height * .5);
+	//点旋转
+	vector<float> rotateVect;
+	brid::MathUtil::rotate(rotateVect, spt->getPositionX(), spt->getPositionY(), p1.x, p1.y, -angle, false);
+	p1 = Point(rotateVect.at(0), rotateVect.at(1));
+	brid::MathUtil::rotate(rotateVect, spt->getPositionX(), spt->getPositionY(), p2.x, p2.y, -angle, false);
+	p2 = Point(rotateVect.at(0), rotateVect.at(1));
+	brid::MathUtil::rotate(rotateVect, spt->getPositionX(), spt->getPositionY(), p3.x, p3.y, -angle, false);
+	p3 = Point(rotateVect.at(0), rotateVect.at(1));
+	brid::MathUtil::rotate(rotateVect, spt->getPositionX(), spt->getPositionY(), p4.x, p4.y, -angle, false);
+	p4 = Point(rotateVect.at(0), rotateVect.at(1));
+
+	Vec2 v2d1 = spt->getParent()->convertToWorldSpace(p1);
+	Vec2 v2d2 = spt->getParent()->convertToWorldSpace(p2);
+	Vec2 v2d3 = spt->getParent()->convertToWorldSpace(p3);
+	Vec2 v2d4 = spt->getParent()->convertToWorldSpace(p4);
+
+	vect.push_back(v2d1);
+	vect.push_back(v2d2);
+	vect.push_back(v2d3);
+	vect.push_back(v2d4);
+}
+
+void GameStage::getWallVertex(vector<Vec2> &vect, Node* spt)
+{
+	float angle = spt->getRotation();
+
+	Point p1 = Point(spt->getPositionX() - spt->getContentSize().width * .5, 0);
+
+	Point p2 = Point(spt->getPositionX() - spt->getContentSize().width * .5,
+					spt->getPositionY() + spt->getContentSize().height);
+
+	Point p3 = Point(spt->getPositionX() + spt->getContentSize().width * .5,
+					spt->getPositionY() + spt->getContentSize().height);
+
+	Point p4 = Point(spt->getPositionX() + spt->getContentSize().width * .5, 0);
+
+	//旋转
+	vector<float> rotateVect;
+	brid::MathUtil::rotate(rotateVect, spt->getPositionX(), spt->getPositionY(), p1.x, p1.y, -angle, false);
+	p1 = Point(rotateVect.at(0), rotateVect.at(1));
+	brid::MathUtil::rotate(rotateVect, spt->getPositionX(), spt->getPositionY(), p2.x, p2.y, -angle, false);
+	p2 = Point(rotateVect.at(0), rotateVect.at(1));
+	brid::MathUtil::rotate(rotateVect, spt->getPositionX(), spt->getPositionY(), p3.x, p3.y, -angle, false);
+	p3 = Point(rotateVect.at(0), rotateVect.at(1));
+	brid::MathUtil::rotate(rotateVect, spt->getPositionX(), spt->getPositionY(), p4.x, p4.y, -angle, false);
+	p4 = Point(rotateVect.at(0), rotateVect.at(1));
 
 	Vec2 v2d1 = spt->getParent()->convertToWorldSpace(p1);
 	Vec2 v2d2 = spt->getParent()->convertToWorldSpace(p2);
