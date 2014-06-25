@@ -72,13 +72,12 @@ GameStage::GameStage()
 			//内圈
 			wall->setRotation((i / 2) * 90);
 		}
-		
 		wallContainer->addChild(wall);
-		if(i == 6) 
+		/*if(i == 6) 
 		{
 			Point pp = wall->getParent()->convertToWorldSpace(wall->getPosition());
 			CCLOG("pp.x, pp.y %f %f", pp.x, pp.y);
-		}
+		}*/
 	}
 
 	Node* bridContainer = Node::create();
@@ -123,9 +122,9 @@ void GameStage::render()
 {
 	//旋转小鸟和墙壁容器
 	Node* container = (Node*)this->getChildByTag(1);
-	//container->setRotation(this->rotationBrid->angle);
+	container->setRotation(this->rotationBrid->angle);
 	Node* wallContainer = (Node*)this->getChildByTag(2);
-	//wallContainer->setRotation(-this->rotationBrid->angle * .5);
+	wallContainer->setRotation(-this->rotationBrid->angle * .5);
 
 	//更新小鸟的位置和角度
 	Sprite* bridSpt = (Sprite*)container->getChildByTag(0);
@@ -147,9 +146,9 @@ void GameStage::render()
 	{
 		WallVo* wVo = (WallVo* )this->rotationBrid->wallAry->objectAtIndex(i);
 		DrawNode* wall = (DrawNode*)wallContainer->getChildByTag(wallTag + i);
-		//float newHeight = (float)(this->wallHeight * wVo->scaleY);
-		//wall->setScaleY(wVo->scaleY);
-		//wall->setContentSize(CCSizeMake(wall->getContentSize().width, newHeight));
+		float newHeight = (float)(this->wallHeight * wVo->scaleY);
+		wall->setScaleY(wVo->scaleY);
+		wall->setContentSize(CCSizeMake(wall->getContentSize().width, newHeight));
 		
 		vector<Vec2> wallVect;
 		GameStage::getWallVertex(wallVect, wall);
@@ -170,15 +169,15 @@ void GameStage::render()
 			}	
 		}
 		
-		if (i == 6)
+		if (1)
 		{
-			CCLOG("wall %f", wall->getRotation());
+			/*CCLOG("wall %f", wall->getRotation());
 			CCLOG("wallVect.at(0) %f %f", wallVect.at(0).x, wallVect.at(0).y);
 			CCLOG("wallVect.at(1) %f %f", wallVect.at(1).x, wallVect.at(1).y);
 			CCLOG("wallVect.at(2) %f %f", wallVect.at(2).x, wallVect.at(2).y);
 			CCLOG("wallVect.at(3) %f %f", wallVect.at(3).x, wallVect.at(3).y);
 
-			CCLOG("wall getPositionX %f %f", wall->getPositionX(), wall->getPositionY());
+			CCLOG("wall getPositionX %f %f", wall->getPositionX(), wall->getPositionY());*/
 
 			Vec2 wallPoints[] = { wallVect.at(0), wallVect.at(1),
 								  wallVect.at(2), wallVect.at(3) };
@@ -234,7 +233,7 @@ void GameStage::getWallVertex(vector<Vec2> &vect, Node* spt)
 	float x = spt->getPositionX();
 	float y = spt->getPositionY();
 
-	Point p1 = Point(x - spt->getContentSize().width * .5, 0);
+	Point p1 = Point(x - spt->getContentSize().width * .5, y);
 
 	Point p2 = Point(x - spt->getContentSize().width * .5,
 					 y + spt->getContentSize().height);
@@ -242,10 +241,10 @@ void GameStage::getWallVertex(vector<Vec2> &vect, Node* spt)
 	Point p3 = Point(x + spt->getContentSize().width * .5,
 					 y + spt->getContentSize().height);
 
-	Point p4 = Point(x + spt->getContentSize().width * .5, 0);
+	Point p4 = Point(x + spt->getContentSize().width * .5, y);
 
 	//旋转
-	/*vector<float> rotateVect;
+	vector<float> rotateVect;
 	brid::MathUtil::rotate(rotateVect, x, y, p1.x, p1.y, -angle, false);
 	p1 = Point(rotateVect.at(0), rotateVect.at(1));
 	brid::MathUtil::rotate(rotateVect, x, y, p2.x, p2.y, -angle, false);
@@ -253,7 +252,7 @@ void GameStage::getWallVertex(vector<Vec2> &vect, Node* spt)
 	brid::MathUtil::rotate(rotateVect, x, y, p3.x, p3.y, -angle, false);
 	p3 = Point(rotateVect.at(0), rotateVect.at(1));
 	brid::MathUtil::rotate(rotateVect, x, y, p4.x, p4.y, -angle, false);
-	p4 = Point(rotateVect.at(0), rotateVect.at(1));*/
+	p4 = Point(rotateVect.at(0), rotateVect.at(1));
 
 	Vec2 v2d1 = spt->getParent()->convertToWorldSpace(p1);
 	Vec2 v2d2 = spt->getParent()->convertToWorldSpace(p2);
