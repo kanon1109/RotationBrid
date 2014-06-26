@@ -122,9 +122,9 @@ void GameStage::render()
 {
 	//旋转小鸟和墙壁容器
 	Node* container = (Node*)this->getChildByTag(1);
-	container->setRotation(this->rotationBrid->angle);
+	//container->setRotation(this->rotationBrid->angle);
 	Node* wallContainer = (Node*)this->getChildByTag(2);
-	wallContainer->setRotation(-this->rotationBrid->angle * .5);
+	//wallContainer->setRotation(-this->rotationBrid->angle * .5);
 
 	//更新小鸟的位置和角度
 	Sprite* bridSpt = (Sprite*)container->getChildByTag(0);
@@ -156,7 +156,6 @@ void GameStage::render()
 		for (unsigned int j = 0; j < bridVect.size(); ++j)
 		{
 			Vec2 bridV2d = bridVect.at(j);
-			
 			if(brid::MathUtil::isInsideSquare(wallVect.at(0), 
 											  wallVect.at(1), 
 											  wallVect.at(2), 
@@ -169,7 +168,7 @@ void GameStage::render()
 			}	
 		}
 		
-		if (1)
+		if (i == 2)
 		{
 			/*CCLOG("wall %f", wall->getRotation());
 			CCLOG("wallVect.at(0) %f %f", wallVect.at(0).x, wallVect.at(0).y);
@@ -178,7 +177,8 @@ void GameStage::render()
 			CCLOG("wallVect.at(3) %f %f", wallVect.at(3).x, wallVect.at(3).y);
 
 			CCLOG("wall getPositionX %f %f", wall->getPositionX(), wall->getPositionY());*/
-
+			this->debugNode->drawDot(wallVect.at(2), 5, ColorUtil::getColor4F(0xFF, 0x00, 0x00, 0xFF));
+			
 			Vec2 wallPoints[] = { wallVect.at(0), wallVect.at(1),
 								  wallVect.at(2), wallVect.at(3) };
 			this->debugNode->drawPolygon(wallPoints, 4, ColorUtil::getColor4F(0x00, 0xAD, 0xFF, 0x00),
