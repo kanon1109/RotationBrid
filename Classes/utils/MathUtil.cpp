@@ -12,7 +12,7 @@ brid::MathUtil::~MathUtil()
 
 float brid::MathUtil::fixNumber(float num, float min, float range)
 {
-	(float)num = (int)num % (int)range;
+	num = (int)num % (int)range;
 	if (num < min)
 		return num + range;
 	return num;
