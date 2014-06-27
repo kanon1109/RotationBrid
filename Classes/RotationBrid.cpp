@@ -13,10 +13,12 @@ RotationBrid::~RotationBrid()
 void RotationBrid::initData()
 {
 	this->angle = 0;
+	this->wallAngle = 60;
 	this->floorPosY = 80;
+	this->topPosY = 270;
 	this->bVo = BirdVo::create();
 	this->bVo->x = 0;
-	this->bVo->y = 200;
+	this->bVo->y = 240;
 	this->bVo->vx = 10;
 	this->bVo->retain();
 
@@ -36,6 +38,7 @@ void RotationBrid::initData()
 void RotationBrid::update()
 {
 	this->angle++;
+	this->wallAngle -= .5;
 	this->bVo->y -= this->bVo->vy;
 	this->bVo->vy += this->bVo->g;
 	//计算鸟身体的角度
@@ -53,4 +56,12 @@ void RotationBrid::update()
 		else
 			wVo->scaleY -= wVo->vy;
 	}
+}
+
+bool RotationBrid::outRange()
+{
+	if(this->bVo->y <= this->floorPosY || 
+	   this->bVo->y >= this->topPosY)
+		return true;
+	return false;
 }

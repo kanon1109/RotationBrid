@@ -12,6 +12,13 @@ public:
 	~GameStage();
 	CREATE_FUNC(GameStage);
 private:
+	
+	//初始化UI
+	void initUI();
+
+	//初始化游戏
+	void initGame();
+
 	//单点事件
 	virtual bool onTouchBegan(Touch* touch);
 	void loop(float dt);
@@ -40,11 +47,19 @@ private:
 	//墙壁的枚举
 	enum tag
 	{
-		wallTag = 3
+		bridTag = 0,
+		bridContainerTag = 1,
+		wallContainerTag = 2,
+		wallTag = 3,
+		startSceneTag = 9
 	};
 	//墙壁的宽度
 	float wallWidth;
 	//墙壁的高度
 	float wallHeight;
+	//失败
+	void fail();
+	//开始按钮点击事件
+	void GameStage::onClickStartBtn(Ref* sender);
 };
 #endif

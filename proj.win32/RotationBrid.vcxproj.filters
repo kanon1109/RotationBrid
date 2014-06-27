@@ -16,6 +16,9 @@
     <Filter Include="Classes\utils">
       <UniqueIdentifier>{4e871663-a9d4-4e3b-9b0b-244d4c6ccd65}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Classes\ui">
+      <UniqueIdentifier>{d6373f9f-2864-4a95-abd4-2d01888886bc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -45,6 +48,12 @@
     <ClCompile Include="..\Classes\utils\MathUtil.cpp">
       <Filter>Classes\utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\ui\StartScene.cpp">
+      <Filter>Classes\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\utils\ScreenUtil.cpp">
+      <Filter>Classes\utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -72,6 +81,12 @@
       <Filter>Classes\utils</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\utils\MathUtil.h">
+      <Filter>Classes\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\ui\StartScene.h">
+      <Filter>Classes\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\utils\ScreenUtil.h">
       <Filter>Classes\utils</Filter>
     </ClInclude>
   </ItemGroup>

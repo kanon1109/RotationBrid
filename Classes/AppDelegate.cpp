@@ -1,6 +1,6 @@
 #include "AppDelegate.h"
 #include "GameStage.h"
-
+#include "utils/ScreenUtil.h"
 USING_NS_CC;
 
 AppDelegate::AppDelegate() {
@@ -17,7 +17,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto glview = director->getOpenGLView();
     if(!glview) {
         glview = GLView::create("RotationBrid");
-		glview->setFrameSize(960, 800);
+		glview->setFrameSize(960, 640);
         director->setOpenGLView(glview);
     }
 
@@ -26,6 +26,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     // set FPS. the default value is 1.0/60 if you don't call this
     director->setAnimationInterval(1.0 / 60);
+
+	ScreenUtil::setScreenSize(960, 640, false);
 
     // create a scene. it's an autorelease object
 	auto scene = GameStage::create();

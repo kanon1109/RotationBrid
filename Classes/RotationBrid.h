@@ -14,14 +14,20 @@ public:
 	BirdVo* bVo;
 	//墙壁数组
 	Array* wallAry;
-	//舞台角度
+	//小鸟容器角度
 	float angle;
+	//墙壁角度
+	float wallAngle;
 	//更新
 	void update();
+	//判断是否超过边界
+	bool outRange();
 private:
 	void initData();
 	//地面高度
 	float floorPosY;
+	//顶部高度
+	float topPosY;
 	//墙壁的数量
 	int wallCount;
 };
