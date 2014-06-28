@@ -52,7 +52,8 @@ private:
 		failSceneTag = 10,
 		gameLayerTag = 11,
 		uiLayerTag = 12,
-		scoreTxtTag = 13
+		scoreTxtTag = 13,
+		bgDrawTag = 14
 	};
 	//墙壁的宽度
 	float wallWidth;
@@ -70,5 +71,9 @@ private:
 	void startGame();
 	//设置分数
 	void setScore(int score);
+	//绘制游戏背景
+	void setGameGgColor(Color4F color);
+	//设置墙壁颜色
+	void setWallColor(Color4F color);
 };
 #endif

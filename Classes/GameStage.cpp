@@ -158,6 +158,9 @@ void GameStage::getWallVertex(vector<Vec2> &vect, Node* spt)
 
 void GameStage::fail()
 {
+	Color4F color = ColorUtil::getColor4F(0x00, 0x00, 0x00, 0xFF);
+	this->setGameGgColor(color);
+	this->setWallColor(color);
 	this->unschedule(schedule_selector(GameStage::loop));
 	this->showFailUI(true);
 }
@@ -168,21 +171,10 @@ void GameStage::initGameUI()
 	this->rotationBrid = RotationBrid::create();
 	this->rotationBrid->retain();
 
-	//绘制背景
-	Vec2 points[] = { Vec2(0, 0), Vec2(0, ScreenUtil::getScreenHeight()),
-						Vec2(ScreenUtil::getScreenWidth(), ScreenUtil::getScreenHeight()),
-						Vec2(ScreenUtil::getScreenWidth(), 0) };
 	DrawNode* draw = DrawNode::create();
-	//背景
-	draw->drawPolygon(points, 4, ColorUtil::getColor4F(0x00 , 0xAD , 0xFF, 0xFF),
-		0, ColorUtil::getColor4F(0x00, 0xAD, 0xFF, 0xFF));
-	//白色大园
-	draw->drawDot(Vec2(ScreenUtil::getScreenWidth() *.5, ScreenUtil::getScreenHeight() *.5), 280,
-		ColorUtil::getColor4F(0xFF, 0xFF, 0xFF, 0xFF));
-	//中间蓝色小圆形
-	draw->drawDot(Vec2(ScreenUtil::getScreenWidth() *.5, ScreenUtil::getScreenHeight() *.5), 80,
-						ColorUtil::getColor4F(0x00, 0xAD, 0xFF, 0xFF));
+	draw->setTag(bgDrawTag);
 	gameLayer->addChild(draw);
+	
 
 	Node* wallContainer = (Node* )Node::create();
 	wallContainer->setAnchorPoint(Point(.5f, .5f));
@@ -196,10 +188,7 @@ void GameStage::initGameUI()
 	float r = 360;
 	this->wallWidth = 25;
 	this->wallHeight = 150;
-	Vec2 wallPoints[] = { Vec2(-this->wallWidth / 2, 0), 
-						Vec2(-this->wallWidth / 2, this->wallHeight),
-						Vec2(this->wallWidth / 2, this->wallHeight), 
-						Vec2(this->wallWidth / 2, 0)};
+	
 	int index = 0;
 	for (int i = 0; i < count; ++i)
 	{
@@ -207,9 +196,9 @@ void GameStage::initGameUI()
 		DrawNode* wall = DrawNode::create();
 		wall->setAnchorPoint(Point(0, 0));
 		wall->setContentSize(CCSizeMake(this->wallWidth, this->wallHeight));
-		wall->drawPolygon(wallPoints, 4, ColorUtil::getColor4F(0x00, 0xAD, 0xFF, 0xFF),
-									  0, ColorUtil::getColor4F(0x00, 0xAD, 0xFF, 0xFF));
 		wall->setTag(wallTag + i);
+
+		
 		if (i % 2 == 0)
 		{
 			//外圈
@@ -312,6 +301,11 @@ void GameStage::startGame()
 	Layer* gameLayer = (Layer* )this->getChildByTag(gameLayerTag);
 	Node* wallContainer = (Node* ) gameLayer->getChildByTag(wallContainerTag);
 	wallContainer->setRotation(this->rotationBrid->wallAngle);
+
+	Color4F color = ColorUtil::getColor4F(0x00, 0xAD, 0xFF, 0xFF);
+	this->setGameGgColor(color);
+	this->setWallColor(color);
+
 	this->schedule(schedule_selector(GameStage::loop), .03f);
 }
 
@@ -321,4 +315,40 @@ void GameStage::setScore( int score )
 	Layer* gameLayer = (Layer* )this->getChildByTag(gameLayerTag);
 	LabelTTF* scoreValTxt = (LabelTTF* )gameLayer->getChildByTag(scoreTxtTag);
 	scoreValTxt->setString(str->_string);
+}
+
+void GameStage::setGameGgColor(Color4F color)
+{
+	Layer* gameLayer = (Layer* )this->getChildByTag(gameLayerTag);
+	DrawNode* draw = (DrawNode* )gameLayer->getChildByTag(bgDrawTag);
+	draw->clear();
+	//绘制背景
+	Vec2 points[] = { Vec2(0, 0), Vec2(0, ScreenUtil::getScreenHeight()),
+					  Vec2(ScreenUtil::getScreenWidth(), ScreenUtil::getScreenHeight()),
+					  Vec2(ScreenUtil::getScreenWidth(), 0) };
+	
+	//背景
+	draw->drawPolygon(points, 4, color, 0, color);
+	//白色大园
+	draw->drawDot(Vec2(ScreenUtil::getScreenWidth() *.5, ScreenUtil::getScreenHeight() *.5), 280,
+						ColorUtil::getColor4F(0xFF, 0xFF, 0xFF, 0xFF));
+	//中间蓝色小圆形
+	draw->drawDot(Vec2(ScreenUtil::getScreenWidth() *.5, ScreenUtil::getScreenHeight() *.5), 80, color);
+}
+
+void GameStage::setWallColor( Color4F color )
+{
+	Layer* gameLayer = (Layer* )this->getChildByTag(gameLayerTag);
+	Node* wallContainer = (Node*)gameLayer->getChildByTag(wallContainerTag);
+	Vec2 wallPoints[] = { Vec2(-this->wallWidth / 2, 0), 
+							Vec2(-this->wallWidth / 2, this->wallHeight),
+							Vec2(this->wallWidth / 2, this->wallHeight), 
+							Vec2(this->wallWidth / 2, 0)};
+	int count = this->rotationBrid->wallAry->count();
+	for (int i = 0; i < count; ++i)
+	{
+		DrawNode* wall = (DrawNode* ) wallContainer->getChildByTag(wallTag + i);
+		wall->clear();
+		wall->drawPolygon(wallPoints, 4, color, 0, color);
+	}
 }
