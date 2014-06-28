@@ -140,6 +140,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\Classes\data\WallVo.cpp" />
     <ClCompile Include="..\Classes\GameStage.cpp" />
     <ClCompile Include="..\Classes\RotationBrid.cpp" />
+    <ClCompile Include="..\Classes\ui\FailScene.cpp" />
     <ClCompile Include="..\Classes\ui\StartScene.cpp" />
     <ClCompile Include="..\Classes\utils\ColorUtil.cpp" />
     <ClCompile Include="..\Classes\utils\MathUtil.cpp" />
@@ -153,6 +154,7 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\data\WallVo.h" />
     <ClInclude Include="..\Classes\GameStage.h" />
     <ClInclude Include="..\Classes\RotationBrid.h" />
+    <ClInclude Include="..\Classes\ui\FailScene.h" />
     <ClInclude Include="..\Classes\ui\StartScene.h" />
     <ClInclude Include="..\Classes\utils\ColorUtil.h" />
     <ClInclude Include="..\Classes\utils\MathUtil.h" />

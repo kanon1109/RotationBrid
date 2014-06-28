@@ -7,7 +7,7 @@ BirdVo::BirdVo(void)
 	this->y = 0;
 	this->vx = 0;
 	this->vy = 0;
-	this->g = .4f;
+	this->g = .6f;
 }
 
 BirdVo::~BirdVo(void)
@@ -16,5 +16,5 @@ BirdVo::~BirdVo(void)
 
 void BirdVo::jump()
 {
-	this->vy = -4;
+	this->vy = -5;
 }

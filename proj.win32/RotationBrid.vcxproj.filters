@@ -54,6 +54,9 @@
     <ClCompile Include="..\Classes\utils\ScreenUtil.cpp">
       <Filter>Classes\utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\ui\FailScene.cpp">
+      <Filter>Classes\ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -88,6 +91,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\utils\ScreenUtil.h">
       <Filter>Classes\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\ui\FailScene.h">
+      <Filter>Classes\ui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

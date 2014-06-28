@@ -3,7 +3,7 @@
 #include "utils/Random.h"
 RotationBrid::RotationBrid()
 {
-	this->initData();
+	this->createData();
 }
 
 RotationBrid::~RotationBrid()
@@ -16,23 +16,10 @@ void RotationBrid::initData()
 	this->wallAngle = 60;
 	this->floorPosY = 80;
 	this->topPosY = 270;
-	this->bVo = BirdVo::create();
 	this->bVo->x = 0;
 	this->bVo->y = 240;
 	this->bVo->vx = 10;
-	this->bVo->retain();
-
-	this->wallAry = Array::create();
-	this->wallAry->retain();
-
-	this->wallCount = 8;
-	for (int i = 0; i < this->wallCount; ++i)
-	{
-		WallVo* wVo = WallVo::create();
-		wVo->minRangeScaleY = 0.7;
-		wVo->maxRangeScaleY = 1.3;
-		this->wallAry->addObject(wVo);
-	}
+	this->bVo->vy = 0;
 }
 
 void RotationBrid::update()
@@ -64,4 +51,22 @@ bool RotationBrid::outRange()
 	   this->bVo->y >= this->topPosY)
 		return true;
 	return false;
+}
+
+void RotationBrid::createData()
+{
+	this->bVo = BirdVo::create();
+	this->bVo->retain();
+
+	this->wallAry = Array::create();
+	this->wallAry->retain();
+
+	this->wallCount = 8;
+	for (int i = 0; i < this->wallCount; ++i)
+	{
+		WallVo* wVo = WallVo::create();
+		wVo->minRangeScaleY = 0.7;
+		wVo->maxRangeScaleY = 1.3;
+		this->wallAry->addObject(wVo);
+	}
 }

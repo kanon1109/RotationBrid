@@ -12,15 +12,13 @@ public:
 	~GameStage();
 	CREATE_FUNC(GameStage);
 private:
-	
 	//初始化UI
 	void initUI();
-
-	//初始化游戏
-	void initGame();
-
+	//初始化游戏UI
+	void initGameUI();
 	//单点事件
 	virtual bool onTouchBegan(Touch* touch);
+	//主循环
 	void loop(float dt);
 	//渲染
 	void render();
@@ -43,7 +41,6 @@ private:
 	// Returns:   void
 	//************************************
 	void getWallVertex(vector<Vec2> &vect, Node* spt);
-
 	//墙壁的枚举
 	enum tag
 	{
@@ -51,7 +48,11 @@ private:
 		bridContainerTag = 1,
 		wallContainerTag = 2,
 		wallTag = 3,
-		startSceneTag = 9
+		startSceneTag = 9,
+		failSceneTag = 10,
+		gameLayerTag = 11,
+		uiLayerTag = 12,
+		scoreTxtTag = 13
 	};
 	//墙壁的宽度
 	float wallWidth;
@@ -61,5 +62,13 @@ private:
 	void fail();
 	//开始按钮点击事件
 	void GameStage::onClickStartBtn(Ref* sender);
+	//重玩按钮点击事件
+	void GameStage::onClickReplayBtn(Ref* sender);
+	//显示失败界面
+	void showFailUI(bool flag);
+	//开始游戏
+	void startGame();
+	//设置分数
+	void setScore(int score);
 };
 #endif

@@ -22,8 +22,11 @@ public:
 	void update();
 	//判断是否超过边界
 	bool outRange();
-private:
+	//初始化数据
 	void initData();
+private:
+	//创建数据
+	void createData();
 	//地面高度
 	float floorPosY;
 	//顶部高度
