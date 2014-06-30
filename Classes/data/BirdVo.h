@@ -23,6 +23,8 @@ public:
 	float angle;
 	//跳跃
 	void jump();
+	//处于区域的索引
+	int areaIndex;
 };
 
 #endif // !1

@@ -234,6 +234,10 @@ void GameStage::initGameUI()
 	scoreTxt->setPosition(ScreenUtil::getCenter());
 	gameLayer->addChild(scoreTxt);
 
+	this->debugNode = DrawNode::create();
+	this->debugNode->drawDot(Vec2(0, 0), 3, ColorUtil::getColor4F(0xFF, 0x00, 0x00, 0xFF));
+	this->addChild(this->debugNode);
+
 	//初始化点击触摸
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->onTouchBegan = CC_CALLBACK_1(GameStage::onTouchBegan, this);
@@ -359,43 +363,23 @@ void GameStage::checkThough()
 	Node* container = (Node*)gameLayer->getChildByTag(birdContainerTag);
 	//更新小鸟的位置和角度
 	Sprite* birdSpt = (Sprite*)container->getChildByTag(birdTag);
-	int bridAngle = bird::MathUtil::fixAngle(container->getRotation() + 270);
 	Node* wallContainer = (Node*)gameLayer->getChildByTag(wallContainerTag);
-	int count = this->rotationBird->wallAry->count() / 2;
-	//int angle = 360 / count;
-	CCLOG("bridAngle %d", bridAngle);
-	if (bridAngle >= wallContainer->getRotation() && 
-		bridAngle < wallContainer->getRotation() + 90)
+	
+	Array* posAry = Array::create();
+	int count = this->rotationBird->wallAry->count();
+	debugNode->clear();
+	for (int i = 0; i < count; ++i)
 	{
-		CCLOG("1");
-	}
-	else if (bridAngle > wallContainer->getRotation() + 90 &&
-			 bridAngle < wallContainer->getRotation() + 180)
-	{
-		CCLOG("2");
-	}
-	else if (bridAngle > wallContainer->getRotation() + 180 &&
-			 bridAngle < wallContainer->getRotation() + 270)
-	{
-		CCLOG("3");
-	}
-	else if (bridAngle > wallContainer->getRotation() + 270 &&
-			bridAngle < wallContainer->getRotation() + 360)
-	{
-		CCLOG("4");
-	}
-	/*for (int i = 0; i < count; ++i)
-	{
-		CCLOG("i % d", i);
-		int wallAngle1 = bird::MathUtil::fixAngle(wallContainer->getRotation() + (i * angle));
-		int wallAngle2 = bird::MathUtil::fixAngle(wallContainer->getRotation() + ((i + 1) * angle));
-		CCLOG("wallAngle1 % d", wallAngle1);
-		CCLOG("wallAngle2 % d", wallAngle2);
-		if(bridAngle >= wallAngle1 && 
-		   bridAngle < wallAngle2)
+		if(i % 2 != 0)
 		{
-			//CCLOG("i % d", i);
-			//break;
+			//内圈
+			DrawNode* wall = (DrawNode* )wallContainer->getChildByTag(wallTag + i);
+			float x = wall->getPositionX() + cos(bird::MathUtil::dgs2rds(wall->getRotation())) * wall->getContentSize().height;
+			float y = wall->getPositionY() + sin(bird::MathUtil::dgs2rds(wall->getRotation())) * wall->getContentSize().height;
+			Point p = Point(x, y);
+			p = wall->getParent()->convertToWorldSpace(p);
+			debugNode->drawDot(p, 5, ColorUtil::getColor4F(0xFF, 0x00, 0x00, 0xFF));
+			//CCLOG("%f %f", pos.x, pos.y);
 		}
-	}*/
+	}
 }

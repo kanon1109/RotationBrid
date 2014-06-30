@@ -8,6 +8,7 @@ BirdVo::BirdVo(void)
 	this->vx = 0;
 	this->vy = 0;
 	this->g = .6f;
+	this->areaIndex = 0;
 }
 
 BirdVo::~BirdVo(void)
