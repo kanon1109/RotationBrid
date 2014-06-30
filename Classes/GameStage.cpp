@@ -39,7 +39,7 @@ void GameStage::render()
 	Node* container = (Node*)gameLayer->getChildByTag(birdContainerTag);
 	container->setRotation(this->rotationBird->angle);
 	Node* wallContainer = (Node*)gameLayer->getChildByTag(wallContainerTag);
-	//wallContainer->setRotation(this->rotationBird->wallAngle);
+	wallContainer->setRotation(this->rotationBird->wallAngle);
 
 	//更新小鸟的位置和角度
 	Sprite* birdSpt = (Sprite*)container->getChildByTag(birdTag);
@@ -222,7 +222,7 @@ void GameStage::initGameUI()
 	birdContainer->setAnchorPoint(Point(.5f, .5f));
 	birdContainer->setPosition(Point(Director::getInstance()->getVisibleSize().width * .5,
 									 Director::getInstance()->getVisibleSize().height * .5));
-
+	birdContainer->setRotation(this->rotationBird->angle);
 	Sprite* birdSpt = Sprite::create("bird.png");
 	birdSpt->setTag(birdTag);
 	birdContainer->addChild(birdSpt);
@@ -359,12 +359,32 @@ void GameStage::checkThough()
 	Node* container = (Node*)gameLayer->getChildByTag(birdContainerTag);
 	//更新小鸟的位置和角度
 	Sprite* birdSpt = (Sprite*)container->getChildByTag(birdTag);
-	int bridAngle = bird::MathUtil::fixAngle(container->getRotation());
+	int bridAngle = bird::MathUtil::fixAngle(container->getRotation() + 270);
 	Node* wallContainer = (Node*)gameLayer->getChildByTag(wallContainerTag);
 	int count = this->rotationBird->wallAry->count() / 2;
-	int angle = 360 / count;
+	//int angle = 360 / count;
 	CCLOG("bridAngle %d", bridAngle);
-	for (int i = 0; i < count; ++i)
+	if (bridAngle >= wallContainer->getRotation() && 
+		bridAngle < wallContainer->getRotation() + 90)
+	{
+		CCLOG("1");
+	}
+	else if (bridAngle > wallContainer->getRotation() + 90 &&
+			 bridAngle < wallContainer->getRotation() + 180)
+	{
+		CCLOG("2");
+	}
+	else if (bridAngle > wallContainer->getRotation() + 180 &&
+			 bridAngle < wallContainer->getRotation() + 270)
+	{
+		CCLOG("3");
+	}
+	else if (bridAngle > wallContainer->getRotation() + 270 &&
+			bridAngle < wallContainer->getRotation() + 360)
+	{
+		CCLOG("4");
+	}
+	/*for (int i = 0; i < count; ++i)
 	{
 		CCLOG("i % d", i);
 		int wallAngle1 = bird::MathUtil::fixAngle(wallContainer->getRotation() + (i * angle));
@@ -377,5 +397,5 @@ void GameStage::checkThough()
 			//CCLOG("i % d", i);
 			//break;
 		}
-	}
+	}*/
 }
