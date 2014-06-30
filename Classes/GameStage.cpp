@@ -6,7 +6,7 @@
 #include "data/WallVo.h"
 #include "ui/StartScene.h"
 #include "ui/FailScene.h"
-using namespace brid;
+using namespace bird;
 GameStage::GameStage()
 {
 	//初始化随机种子
@@ -16,7 +16,7 @@ GameStage::GameStage()
 
 bool GameStage::onTouchBegan(Touch* touch)
 {
-	this->rotationBrid->bVo->jump();
+	this->rotationBird->bVo->jump();
 	return true;
 }
 
@@ -26,33 +26,34 @@ GameStage::~GameStage()
 
 void GameStage::loop(float dt)
 {
-	if(this->rotationBrid->outRange()) this->fail();
-	this->rotationBrid->update();
+	if(this->rotationBird->outRange()) this->fail();
+	this->rotationBird->update();
 	this->render();
+	this->checkThough();
 }
 
 void GameStage::render()
 {
 	Layer* gameLayer = (Layer* )this->getChildByTag(gameLayerTag);
 	//旋转小鸟和墙壁容器
-	Node* container = (Node*)gameLayer->getChildByTag(bridContainerTag);
-	container->setRotation(this->rotationBrid->angle);
+	Node* container = (Node*)gameLayer->getChildByTag(birdContainerTag);
+	container->setRotation(this->rotationBird->angle);
 	Node* wallContainer = (Node*)gameLayer->getChildByTag(wallContainerTag);
-	wallContainer->setRotation(this->rotationBrid->wallAngle);
+	//wallContainer->setRotation(this->rotationBird->wallAngle);
 
 	//更新小鸟的位置和角度
-	Sprite* bridSpt = (Sprite*)container->getChildByTag(bridTag);
-	bridSpt->setPositionX(this->rotationBrid->bVo->x);
-	bridSpt->setPositionY(this->rotationBrid->bVo->y);
-	bridSpt->setRotation(this->rotationBrid->bVo->angle);
+	Sprite* birdSpt = (Sprite*)container->getChildByTag(birdTag);
+	birdSpt->setPositionX(this->rotationBird->bVo->x);
+	birdSpt->setPositionY(this->rotationBird->bVo->y);
+	birdSpt->setRotation(this->rotationBird->bVo->angle);
 
-	vector<Vec2> bridVect;
-	GameStage::getBridVertex(bridVect, bridSpt);
+	vector<Vec2> birdVect;
+	GameStage::getBirdVertex(birdVect, birdSpt);
 
-	int count = this->rotationBrid->wallAry->count();
+	int count = this->rotationBird->wallAry->count();
 	for (int i = 0; i < count; ++i)
 	{
-		WallVo* wVo = (WallVo* )this->rotationBrid->wallAry->objectAtIndex(i);
+		WallVo* wVo = (WallVo* )this->rotationBird->wallAry->objectAtIndex(i);
 		DrawNode* wall = (DrawNode*)wallContainer->getChildByTag(wallTag + i);
 		float newHeight = (float)(this->wallHeight * wVo->scaleY);
 		wall->setScaleY(wVo->scaleY);
@@ -61,15 +62,15 @@ void GameStage::render()
 		vector<Vec2> wallVect;
 		GameStage::getWallVertex(wallVect, wall);
 
-		for (unsigned int j = 0; j < bridVect.size(); ++j)
+		for (unsigned int j = 0; j < birdVect.size(); ++j)
 		{
-			Vec2 bridV2d = bridVect.at(j);
+			Vec2 birdV2d = birdVect.at(j);
 			
-			if(brid::MathUtil::isInsideSquare(wallVect.at(0), 
+			if(bird::MathUtil::isInsideSquare(wallVect.at(0), 
 											  wallVect.at(1), 
 											  wallVect.at(2), 
 											  wallVect.at(3), 
-											  bridV2d))
+											  birdV2d))
 			{
 				this->fail();
 				break;
@@ -80,7 +81,7 @@ void GameStage::render()
 	}
 }
 
-void GameStage::getBridVertex( vector<Vec2> &vect, Node* spt )
+void GameStage::getBirdVertex( vector<Vec2> &vect, Node* spt )
 {
 	float angle = spt->getRotation();
 	float x = spt->getPositionX();
@@ -98,13 +99,13 @@ void GameStage::getBridVertex( vector<Vec2> &vect, Node* spt )
 					 y - spt->getContentSize().height * .5);
 	//点旋转
 	vector<float> rotateVect;
-	brid::MathUtil::rotate(rotateVect, x, y, p1.x, p1.y, -angle, false);
+	bird::MathUtil::rotate(rotateVect, x, y, p1.x, p1.y, -angle, false);
 	p1 = Point(rotateVect.at(0), rotateVect.at(1));
-	brid::MathUtil::rotate(rotateVect, x, y, p2.x, p2.y, -angle, false);
+	bird::MathUtil::rotate(rotateVect, x, y, p2.x, p2.y, -angle, false);
 	p2 = Point(rotateVect.at(0), rotateVect.at(1));
-	brid::MathUtil::rotate(rotateVect, x, y, p3.x, p3.y, -angle, false);
+	bird::MathUtil::rotate(rotateVect, x, y, p3.x, p3.y, -angle, false);
 	p3 = Point(rotateVect.at(0), rotateVect.at(1));
-	brid::MathUtil::rotate(rotateVect, x, y, p4.x, p4.y, -angle, false);
+	bird::MathUtil::rotate(rotateVect, x, y, p4.x, p4.y, -angle, false);
 	p4 = Point(rotateVect.at(0), rotateVect.at(1));
 
 	Vec2 v2d1 = spt->getParent()->convertToWorldSpace(p1);
@@ -136,13 +137,13 @@ void GameStage::getWallVertex(vector<Vec2> &vect, Node* spt)
 
 	//旋转
 	vector<float> rotateVect;
-	brid::MathUtil::rotate(rotateVect, x, y, p1.x, p1.y, -angle, false);
+	bird::MathUtil::rotate(rotateVect, x, y, p1.x, p1.y, -angle, false);
 	p1 = Point(rotateVect.at(0), rotateVect.at(1));
-	brid::MathUtil::rotate(rotateVect, x, y, p2.x, p2.y, -angle, false);
+	bird::MathUtil::rotate(rotateVect, x, y, p2.x, p2.y, -angle, false);
 	p2 = Point(rotateVect.at(0), rotateVect.at(1));
-	brid::MathUtil::rotate(rotateVect, x, y, p3.x, p3.y, -angle, false);
+	bird::MathUtil::rotate(rotateVect, x, y, p3.x, p3.y, -angle, false);
 	p3 = Point(rotateVect.at(0), rotateVect.at(1));
-	brid::MathUtil::rotate(rotateVect, x, y, p4.x, p4.y, -angle, false);
+	bird::MathUtil::rotate(rotateVect, x, y, p4.x, p4.y, -angle, false);
 	p4 = Point(rotateVect.at(0), rotateVect.at(1));
 
 	Vec2 v2d1 = spt->getParent()->convertToWorldSpace(p1);
@@ -158,6 +159,7 @@ void GameStage::getWallVertex(vector<Vec2> &vect, Node* spt)
 
 void GameStage::fail()
 {
+	return;
 	Color4F color = ColorUtil::getColor4F(0x00, 0x00, 0x00, 0xFF);
 	this->setGameGgColor(color);
 	this->setWallColor(color);
@@ -168,13 +170,12 @@ void GameStage::fail()
 void GameStage::initGameUI()
 {
 	Layer* gameLayer = (Layer* )this->getChildByTag(gameLayerTag);
-	this->rotationBrid = RotationBrid::create();
-	this->rotationBrid->retain();
+	this->rotationBird = RotationBird::create();
+	this->rotationBird->retain();
 
 	DrawNode* draw = DrawNode::create();
 	draw->setTag(bgDrawTag);
 	gameLayer->addChild(draw);
-	
 
 	Node* wallContainer = (Node* )Node::create();
 	wallContainer->setAnchorPoint(Point(.5f, .5f));
@@ -182,14 +183,13 @@ void GameStage::initGameUI()
 	wallContainer->setTag(wallContainerTag);
 	gameLayer->addChild(wallContainer);
 
-	//绘制墙壁
-	int count = this->rotationBrid->wallAry->count();
 	//半径
 	float r = 360;
 	this->wallWidth = 25;
 	this->wallHeight = 150;
-	
 	int index = 0;
+	//绘制墙壁
+	int count = this->rotationBird->wallAry->count();
 	for (int i = 0; i < count; ++i)
 	{
 		//绘制墙壁
@@ -198,7 +198,6 @@ void GameStage::initGameUI()
 		wall->setContentSize(CCSizeMake(this->wallWidth, this->wallHeight));
 		wall->setTag(wallTag + i);
 
-		
 		if (i % 2 == 0)
 		{
 			//外圈
@@ -218,16 +217,16 @@ void GameStage::initGameUI()
 		wallContainer->addChild(wall);
 	}
 
-	Node* bridContainer = Node::create();
-	bridContainer->setTag(bridContainerTag);
-	bridContainer->setAnchorPoint(Point(.5f, .5f));
-	bridContainer->setPosition(Point(Director::getInstance()->getVisibleSize().width * .5,
+	Node* birdContainer = Node::create();
+	birdContainer->setTag(birdContainerTag);
+	birdContainer->setAnchorPoint(Point(.5f, .5f));
+	birdContainer->setPosition(Point(Director::getInstance()->getVisibleSize().width * .5,
 									 Director::getInstance()->getVisibleSize().height * .5));
 
-	Sprite* bridSpt = Sprite::create("brid.png");
-	bridSpt->setTag(bridTag);
-	bridContainer->addChild(bridSpt);
-	gameLayer->addChild(bridContainer);
+	Sprite* birdSpt = Sprite::create("bird.png");
+	birdSpt->setTag(birdTag);
+	birdContainer->addChild(birdSpt);
+	gameLayer->addChild(birdContainer);
 
 	LabelTTF* scoreTxt = LabelTTF::create("0", "Arial", 60);
 	scoreTxt->setTag(scoreTxtTag);
@@ -297,10 +296,10 @@ void GameStage::showFailUI( bool flag )
 
 void GameStage::startGame()
 {
-	this->rotationBrid->initData();
+	this->rotationBird->initData();
 	Layer* gameLayer = (Layer* )this->getChildByTag(gameLayerTag);
 	Node* wallContainer = (Node* ) gameLayer->getChildByTag(wallContainerTag);
-	wallContainer->setRotation(this->rotationBrid->wallAngle);
+	wallContainer->setRotation(this->rotationBird->wallAngle);
 
 	Color4F color = ColorUtil::getColor4F(0x00, 0xAD, 0xFF, 0xFF);
 	this->setGameGgColor(color);
@@ -344,11 +343,39 @@ void GameStage::setWallColor( Color4F color )
 							Vec2(-this->wallWidth / 2, this->wallHeight),
 							Vec2(this->wallWidth / 2, this->wallHeight), 
 							Vec2(this->wallWidth / 2, 0)};
-	int count = this->rotationBrid->wallAry->count();
+	int count = this->rotationBird->wallAry->count();
 	for (int i = 0; i < count; ++i)
 	{
 		DrawNode* wall = (DrawNode* ) wallContainer->getChildByTag(wallTag + i);
 		wall->clear();
 		wall->drawPolygon(wallPoints, 4, color, 0, color);
+	}
+}
+
+void GameStage::checkThough()
+{
+	Layer* gameLayer = (Layer* )this->getChildByTag(gameLayerTag);
+	//旋转小鸟和墙壁容器
+	Node* container = (Node*)gameLayer->getChildByTag(birdContainerTag);
+	//更新小鸟的位置和角度
+	Sprite* birdSpt = (Sprite*)container->getChildByTag(birdTag);
+	int bridAngle = bird::MathUtil::fixAngle(container->getRotation());
+	Node* wallContainer = (Node*)gameLayer->getChildByTag(wallContainerTag);
+	int count = this->rotationBird->wallAry->count() / 2;
+	int angle = 360 / count;
+	CCLOG("bridAngle %d", bridAngle);
+	for (int i = 0; i < count; ++i)
+	{
+		CCLOG("i % d", i);
+		int wallAngle1 = bird::MathUtil::fixAngle(wallContainer->getRotation() + (i * angle));
+		int wallAngle2 = bird::MathUtil::fixAngle(wallContainer->getRotation() + ((i + 1) * angle));
+		CCLOG("wallAngle1 % d", wallAngle1);
+		CCLOG("wallAngle2 % d", wallAngle2);
+		if(bridAngle >= wallAngle1 && 
+		   bridAngle < wallAngle2)
+		{
+			//CCLOG("i % d", i);
+			//break;
+		}
 	}
 }

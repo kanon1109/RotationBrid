@@ -33,9 +33,6 @@
     <ClCompile Include="..\Classes\data\BirdVo.cpp">
       <Filter>Classes\data</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\RotationBrid.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\utils\ColorUtil.cpp">
       <Filter>Classes\utils</Filter>
     </ClCompile>
@@ -57,6 +54,9 @@
     <ClCompile Include="..\Classes\ui\FailScene.cpp">
       <Filter>Classes\ui</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\RotationBird.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -70,9 +70,6 @@
     </ClInclude>
     <ClInclude Include="..\Classes\data\BirdVo.h">
       <Filter>Classes\data</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\RotationBrid.h">
-      <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\utils\ColorUtil.h">
       <Filter>Classes\utils</Filter>
@@ -94,6 +91,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\ui\FailScene.h">
       <Filter>Classes\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\RotationBird.h">
+      <Filter>Classes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

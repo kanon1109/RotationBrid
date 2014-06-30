@@ -8,7 +8,7 @@ using namespace std;
 #ifndef CC_PLATFORM_WIN32
 #include <math.h>
 #endif
-namespace brid
+namespace bird
 {
 class MathUtil
 {

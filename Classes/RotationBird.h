@@ -4,12 +4,12 @@
 #include "data/BirdVo.h"
 #include "cocos2d.h"
 USING_NS_CC;
-class RotationBrid:public Node
+class RotationBird:public Node
 {
 public:
-	RotationBrid();
-	~RotationBrid();
-	CREATE_FUNC(RotationBrid);
+	RotationBird();
+	~RotationBird();
+	CREATE_FUNC(RotationBird);
 	//小鸟数据
 	BirdVo* bVo;
 	//墙壁数组

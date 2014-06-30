@@ -2,7 +2,7 @@
 #ifndef _GAME_STAGE_
 #define _GAME_STAGE_
 #include "cocos2d.h"
-#include "RotationBrid.h"
+#include "RotationBird.h"
 using namespace std;
 USING_NS_CC;
 class GameStage:public Scene
@@ -23,16 +23,16 @@ private:
 	//渲染
 	void render();
 	//旋转小鸟
-	RotationBrid* rotationBrid;
+	RotationBird* rotationBird;
 	//调试绘制
 	DrawNode* debugNode;
 
 	//************************************
-	// Method:    getBridVertex				根据brid获取顶点坐标数组
+	// Method:    getBirdVertex				根据bird获取顶点坐标数组
 	// Parameter: vector<Vec2>& vect		顶点坐标数组（顺时针）
 	// Parameter: Node * spt				显示对象
 	//************************************
-	void getBridVertex(vector<Vec2> &vect, Node* spt);
+	void getBirdVertex(vector<Vec2> &vect, Node* spt);
 
 	//************************************
 	// Description:	获取墙壁的顶点坐标数组
@@ -44,8 +44,8 @@ private:
 	//墙壁的枚举
 	enum tag
 	{
-		bridTag = 0,
-		bridContainerTag = 1,
+		birdTag = 0,
+		birdContainerTag = 1,
 		wallContainerTag = 2,
 		wallTag = 3,
 		startSceneTag = 9,
@@ -75,5 +75,7 @@ private:
 	void setGameGgColor(Color4F color);
 	//设置墙壁颜色
 	void setWallColor(Color4F color);
+	//判断是否穿过障碍
+	void checkThough();
 };
 #endif

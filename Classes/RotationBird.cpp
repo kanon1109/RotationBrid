@@ -1,16 +1,16 @@
-#include "RotationBrid.h"
+#include "RotationBird.h"
 #include "data/WallVo.h"
 #include "utils/Random.h"
-RotationBrid::RotationBrid()
+RotationBird::RotationBird()
 {
 	this->createData();
 }
 
-RotationBrid::~RotationBrid()
+RotationBird::~RotationBird()
 {
 }
 
-void RotationBrid::initData()
+void RotationBird::initData()
 {
 	this->angle = 0;
 	this->wallAngle = 60;
@@ -22,7 +22,7 @@ void RotationBrid::initData()
 	this->bVo->vy = 0;
 }
 
-void RotationBrid::update()
+void RotationBird::update()
 {
 	this->angle++;
 	this->wallAngle -= .5;
@@ -45,7 +45,7 @@ void RotationBrid::update()
 	}
 }
 
-bool RotationBrid::outRange()
+bool RotationBird::outRange()
 {
 	if(this->bVo->y <= this->floorPosY || 
 	   this->bVo->y >= this->topPosY)
@@ -53,7 +53,7 @@ bool RotationBrid::outRange()
 	return false;
 }
 
-void RotationBrid::createData()
+void RotationBird::createData()
 {
 	this->bVo = BirdVo::create();
 	this->bVo->retain();
