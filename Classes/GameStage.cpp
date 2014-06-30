@@ -363,11 +363,28 @@ void GameStage::checkThough()
 	Node* container = (Node*)gameLayer->getChildByTag(birdContainerTag);
 	//更新小鸟的位置和角度
 	Sprite* birdSpt = (Sprite*)container->getChildByTag(birdTag);
+	
+	float bx = birdSpt->getContentSize().width * .5 * cos(bird::MathUtil::dgs2rds(birdSpt->getRotation()));
+	float by = birdSpt->getContentSize().width * .5 * sin(bird::MathUtil::dgs2rds(birdSpt->getRotation()));
+	debugNode->clear();
+	//头部坐标
+	Vec2 headBirdPos = Vec2(birdSpt->getPositionX() + bx, 
+							birdSpt->getPositionY() - by);
+	//尾部坐标
+	Vec2 tailBirdPos = Vec2(birdSpt->getPositionX() - bx, 
+							birdSpt->getPositionY() + by);
+
+	headBirdPos = birdSpt->getParent()->convertToWorldSpace(headBirdPos);
+	tailBirdPos = birdSpt->getParent()->convertToWorldSpace(tailBirdPos);
+
+	debugNode->drawDot(headBirdPos, 5, ColorUtil::getColor4F(0xFF, 0x00, 0x00, 0xFF));
+	debugNode->drawDot(tailBirdPos, 5, ColorUtil::getColor4F(0xFF, 0xCC, 0x00, 0xFF));
+
 	Node* wallContainer = (Node*)gameLayer->getChildByTag(wallContainerTag);
 	
 	Array* posAry = Array::create();
 	int count = this->rotationBird->wallAry->count();
-	debugNode->clear();
+	
 	for (int i = 0; i < count; ++i)
 	{
 		if(i % 2 != 0)
