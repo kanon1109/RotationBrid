@@ -159,7 +159,6 @@ void GameStage::getWallVertex(vector<Vec2> &vect, Node* spt)
 
 void GameStage::fail()
 {
-	return;
 	Color4F color = ColorUtil::getColor4F(0x00, 0x00, 0x00, 0xFF);
 	this->setGameGgColor(color);
 	this->setWallColor(color);
@@ -212,6 +211,7 @@ void GameStage::initGameUI()
 		else
 		{
 			//内圈
+			CCLOG("i / 2 %d", i / 2);
 			wall->setRotation((i / 2) * 90);
 		}
 		wallContainer->addChild(wall);
@@ -296,6 +296,7 @@ void GameStage::showFailUI( bool flag )
 	Layer* uiLayer = (Layer* )this->getChildByTag(uiLayerTag);
 	FailScene* failUI = (FailScene* )uiLayer->getChildByTag(failSceneTag);
 	failUI->setVisible(flag);
+	failUI->setScore(this->score);
 }
 
 void GameStage::startGame()
@@ -304,12 +305,14 @@ void GameStage::startGame()
 	Layer* gameLayer = (Layer* )this->getChildByTag(gameLayerTag);
 	Node* wallContainer = (Node* ) gameLayer->getChildByTag(wallContainerTag);
 	wallContainer->setRotation(this->rotationBird->wallAngle);
-
+	
+	this->score = 0;
+	this->setScore(this->score);
 	Color4F color = ColorUtil::getColor4F(0x00, 0xAD, 0xFF, 0xFF);
 	this->setGameGgColor(color);
 	this->setWallColor(color);
-
 	this->schedule(schedule_selector(GameStage::loop), .03f);
+	
 }
 
 void GameStage::setScore( int score )
@@ -379,8 +382,8 @@ void GameStage::checkThough()
 	headBirdPos = birdSpt->getParent()->convertToWorldSpace(headBirdPos);
 	tailBirdPos = birdSpt->getParent()->convertToWorldSpace(tailBirdPos);
 
-	debugNode->drawDot(headBirdPos, 5, ColorUtil::getColor4F(0xFF, 0x00, 0x00, 0xFF));
-	debugNode->drawDot(tailBirdPos, 5, ColorUtil::getColor4F(0xFF, 0xCC, 0x00, 0xFF));
+	//debugNode->drawDot(headBirdPos, 5, ColorUtil::getColor4F(0xFF, 0x00, 0x00, 0xFF));
+	//debugNode->drawDot(tailBirdPos, 5, ColorUtil::getColor4F(0xFF, 0xCC, 0x00, 0xFF));
 
 	Node* wallContainer = (Node*)gameLayer->getChildByTag(wallContainerTag);
 	
@@ -393,28 +396,22 @@ void GameStage::checkThough()
 		{
 			//内圈
 			DrawNode* wall = (DrawNode* )wallContainer->getChildByTag(wallTag + i);
-			float x = wall->getPositionX() + cos(bird::MathUtil::dgs2rds(-wall->getRotation())) * this->wallHeight;
-			float y = wall->getPositionY() + sin(bird::MathUtil::dgs2rds(-wall->getRotation())) * this->wallHeight;
+			float x = wall->getPositionX() + cos(bird::MathUtil::dgs2rds(-wall->getRotation() + 90)) * this->wallHeight;
+			float y = wall->getPositionY() + sin(bird::MathUtil::dgs2rds(-wall->getRotation() + 90)) * this->wallHeight;
 			Vec2 p = wall->getParent()->convertToWorldSpace(Vec2(x, y));
-			if (i == 1)
-			{
-				wall->clear();
-				debugNode->drawDot(p, 5, ColorUtil::getColor4F(0xFF, 0x00, 0x00, 0xFF));
-			}
 			posVect.push_back(p);
 		}
 	}
-
 	int nextAreaIndex = this->rotationBird->bVo->areaIndex + 1;
-	if (nextAreaIndex > posVect.size()) nextAreaIndex = 1;
-	Vec2 pos = posVect.at(nextAreaIndex - 1);
-	CCLOG("headBirdPos.distance(pos) % f", headBirdPos.distance(pos));
-	CCLOG("tailBirdPos.distance(pos) % f", tailBirdPos.distance(pos));
+	if (nextAreaIndex >= posVect.size()) nextAreaIndex = 0;
+	Vec2 pos = posVect.at(nextAreaIndex);
+	//debugNode->drawDot(pos, 5, ColorUtil::getColor4F(0xFF, 0x00, 0x00, 0xFF));
 	//头部过杆距离大于尾巴过杆距离
 	if (headBirdPos.distance(pos) > tailBirdPos.distance(pos))
 	{
-		CCLOG("add Score %d", nextAreaIndex);
-		this->rotationBird->bVo->areaIndex = nextAreaIndex;
+		this->rotationBird->bVo->areaIndex = nextAreaIndex;	
+		this->score++;
+		this->setScore(this->score);
 	}
 	posVect.clear();
 }

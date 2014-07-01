@@ -13,13 +13,14 @@ RotationBird::~RotationBird()
 void RotationBird::initData()
 {
 	this->angle = 0;
-	this->wallAngle = 0;
+	this->wallAngle = -20;
 	this->floorPosY = 80;
 	this->topPosY = 270;
 	this->bVo->x = 0;
 	this->bVo->y = 240;
 	this->bVo->vx = 10;
 	this->bVo->vy = 0;
+	this->bVo->areaIndex = 0;
 }
 
 void RotationBird::update()

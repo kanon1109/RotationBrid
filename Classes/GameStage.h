@@ -55,6 +55,8 @@ private:
 		scoreTxtTag = 13,
 		bgDrawTag = 14
 	};
+	//分数
+	int score;
 	//墙壁的宽度
 	float wallWidth;
 	//墙壁的高度
