@@ -370,11 +370,11 @@ void GameStage::checkThough()
 	float by = dis * sin(birdRad);
 	debugNode->clear();
 	//头部坐标
-	Vec2 headBirdPos = Vec2(birdSpt->getPositionX() + bx, 
-							birdSpt->getPositionY() - by);
+	Vec2 headBirdPos = Vec2(birdSpt->getPositionX() + dis,
+							birdSpt->getPositionY());
 	//尾部坐标
-	Vec2 tailBirdPos = Vec2(birdSpt->getPositionX() - bx, 
-							birdSpt->getPositionY() + by);
+	Vec2 tailBirdPos = Vec2(birdSpt->getPositionX() - dis,
+							birdSpt->getPositionY());
 
 	headBirdPos = birdSpt->getParent()->convertToWorldSpace(headBirdPos);
 	tailBirdPos = birdSpt->getParent()->convertToWorldSpace(tailBirdPos);
@@ -384,20 +384,37 @@ void GameStage::checkThough()
 
 	Node* wallContainer = (Node*)gameLayer->getChildByTag(wallContainerTag);
 	
-	Array* posAry = Array::create();
+	vector<Vec2> posVect;
 	int count = this->rotationBird->wallAry->count();
-	
+	int areaIndex = 0;
 	for (int i = 0; i < count; ++i)
 	{
 		if(i % 2 != 0)
 		{
 			//内圈
 			DrawNode* wall = (DrawNode* )wallContainer->getChildByTag(wallTag + i);
-			float x = wall->getPositionX() + cos(bird::MathUtil::dgs2rds(wall->getRotation())) * wall->getContentSize().height;
-			float y = wall->getPositionY() + sin(bird::MathUtil::dgs2rds(wall->getRotation())) * wall->getContentSize().height;
-			Point p = Point(x, y);
-			p = wall->getParent()->convertToWorldSpace(p);
-			debugNode->drawDot(p, 5, ColorUtil::getColor4F(0xFF, 0x00, 0x00, 0xFF));
+			float x = wall->getPositionX() + cos(bird::MathUtil::dgs2rds(-wall->getRotation())) * this->wallHeight;
+			float y = wall->getPositionY() + sin(bird::MathUtil::dgs2rds(-wall->getRotation())) * this->wallHeight;
+			Vec2 p = wall->getParent()->convertToWorldSpace(Vec2(x, y));
+			if (i == 1)
+			{
+				wall->clear();
+				debugNode->drawDot(p, 5, ColorUtil::getColor4F(0xFF, 0x00, 0x00, 0xFF));
+			}
+			posVect.push_back(p);
 		}
 	}
+
+	int nextAreaIndex = this->rotationBird->bVo->areaIndex + 1;
+	if (nextAreaIndex > posVect.size()) nextAreaIndex = 1;
+	Vec2 pos = posVect.at(nextAreaIndex - 1);
+	CCLOG("headBirdPos.distance(pos) % f", headBirdPos.distance(pos));
+	CCLOG("tailBirdPos.distance(pos) % f", tailBirdPos.distance(pos));
+	//头部过杆距离大于尾巴过杆距离
+	if (headBirdPos.distance(pos) > tailBirdPos.distance(pos))
+	{
+		CCLOG("add Score %d", nextAreaIndex);
+		this->rotationBird->bVo->areaIndex = nextAreaIndex;
+	}
+	posVect.clear();
 }
