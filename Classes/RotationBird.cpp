@@ -27,10 +27,9 @@ void RotationBird::update()
 {
 	this->angle++;
 	this->wallAngle -= .5;
-	this->bVo->y -= this->bVo->vy;
-	this->bVo->vy += this->bVo->g;
-	//计算鸟身体的角度
-	this->bVo->angle = atan2(this->bVo->vy, this->bVo->vx) * 180 / M_PI;
+
+	this->bVo->update();
+
 	if (this->bVo->y < this->floorPosY) this->bVo->y = this->floorPosY;
 	//计算墙壁
 	for (int i = 0; i < this->wallCount; ++i)
@@ -57,6 +56,7 @@ bool RotationBird::outRange()
 void RotationBird::createData()
 {
 	this->bVo = BirdVo::create();
+	this->bVo->setSize(31, 22);
 	this->bVo->retain();
 
 	this->wallAry = Array::create();

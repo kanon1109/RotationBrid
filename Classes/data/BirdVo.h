@@ -2,6 +2,7 @@
 #ifndef _BIRD_VO_
 #define _BIRD_VO_
 #include "cocos2d.h"
+using namespace std;
 USING_NS_CC;
 class BirdVo :public Node
 {
@@ -25,6 +26,14 @@ public:
 	void jump();
 	//处于区域的索引
 	int areaIndex;
+	//顶点列表
+	vector<Vec2> vects;
+	//宽度
+	float width;
+	//高度
+	float height;
+	//设置高宽
+	void setSize(float w, float h);
 };
 
 #endif // !1

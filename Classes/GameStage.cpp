@@ -14,6 +14,125 @@ GameStage::GameStage()
 	this->initUI();
 }
 
+void GameStage::initGameUI()
+{
+	Layer* gameLayer = (Layer* )this->getChildByTag(gameLayerTag);
+	this->rotationBird = RotationBird::create();
+	this->rotationBird->retain();
+
+	DrawNode* draw = DrawNode::create();
+	draw->setTag(bgDrawTag);
+	gameLayer->addChild(draw);
+
+	Node* wallContainer = (Node* )Node::create();
+	wallContainer->setAnchorPoint(Point(.5f, .5f));
+	wallContainer->setPosition(ScreenUtil::getCenter());
+	wallContainer->setTag(wallContainerTag);
+	gameLayer->addChild(wallContainer);
+
+	//半径
+	float r = 360;
+	this->wallWidth = 25;
+	this->wallHeight = 150;
+	int index = 0;
+	//绘制墙壁
+	int count = this->rotationBird->wallAry->count();
+	for (int i = 0; i < count; ++i)
+	{
+		//绘制墙壁
+		DrawNode* wall = DrawNode::create();
+		wall->setAnchorPoint(Point(0, 0));
+		wall->setContentSize(CCSizeMake(this->wallWidth, this->wallHeight));
+		wall->setTag(wallTag + i);
+
+		if (i % 2 == 0)
+		{
+			//外圈
+			float x = cos((index * 90) * M_PI / 180) * r;
+			float y = sin((index * 90) * M_PI / 180) * r;
+			float angle = atan2(y, x) * 180 / M_PI + 90;
+			if (index % 2 == 0) angle = -angle;
+			wall->setPosition(x, y);
+			wall->setRotation(angle);
+			index++;
+		}
+		else
+		{
+			//内圈
+			CCLOG("i / 2 %d", i / 2);
+			wall->setRotation((i / 2) * 90);
+		}
+		wallContainer->addChild(wall);
+	}
+
+	Node* birdContainer = Node::create();
+	birdContainer->setTag(birdContainerTag);
+	birdContainer->setAnchorPoint(Point(.5f, .5f));
+	birdContainer->setPosition(Point(Director::getInstance()->getVisibleSize().width * .5,
+									Director::getInstance()->getVisibleSize().height * .5));
+	birdContainer->setRotation(this->rotationBird->angle);
+	Sprite* birdSpt = Sprite::create("bird.png");
+	birdSpt->setTag(birdTag);
+	birdContainer->addChild(birdSpt);
+	gameLayer->addChild(birdContainer);
+
+	LabelTTF* scoreTxt = LabelTTF::create("0", "Arial", 60);
+	scoreTxt->setTag(scoreTxtTag);
+	scoreTxt->setAnchorPoint(Point(.5, .5));
+	scoreTxt->setPosition(ScreenUtil::getCenter());
+	gameLayer->addChild(scoreTxt);
+
+	this->debugNode = DrawNode::create();
+	this->debugNode->drawDot(Vec2(0, 0), 3, ColorUtil::getColor4F(0xFF, 0x00, 0x00, 0xFF));
+	this->addChild(this->debugNode);
+
+	//初始化点击触摸
+	auto listener = EventListenerTouchOneByOne::create();
+	listener->onTouchBegan = CC_CALLBACK_1(GameStage::onTouchBegan, this);
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(listener, 1);
+}
+
+void GameStage::initUI()
+{
+	//游戏层
+	Layer* gameLayer = Layer::create();
+	gameLayer->setTag(gameLayerTag);
+	this->addChild(gameLayer);
+
+	//ui层
+	Layer* uiLayer = Layer::create();
+	uiLayer->setTag(uiLayerTag);
+	this->addChild(uiLayer);
+
+	//开始界面
+	StartScene* startUI = StartScene::create();
+	startUI->setTag(startSceneTag);
+	Menu* menu = (Menu* )startUI->getChildByTag(StartScene::menuTag);
+	MenuItemLabel* startBtn = (MenuItemLabel* )menu->getChildByTag(StartScene::startBtnTag);
+	startBtn->setCallback(CC_CALLBACK_1(GameStage::onClickStartBtn, this));
+	uiLayer->addChild(startUI);
+
+	//失败界面
+	FailScene* failUI = FailScene::create();
+	failUI->setTag(failSceneTag);
+	menu = (Menu* )failUI->getChildByTag(FailScene::menuTag);
+	MenuItemLabel* replayBtn = (MenuItemLabel* )menu->getChildByTag(FailScene::replayBtnTag);
+	replayBtn->setCallback(CC_CALLBACK_1(GameStage::onClickReplayBtn, this));
+	uiLayer->addChild(failUI);
+	failUI->setVisible(false);
+}
+
+void GameStage::onClickStartBtn( Ref* sender )
+{
+	Layer* uiLayer = (Layer* )this->getChildByTag(uiLayerTag);
+	StartScene* startUI = (StartScene* )uiLayer->getChildByTag(startSceneTag);
+	startUI->setVisible(false);
+	//初始化游戏场景
+	this->initGameUI();
+	//开始游戏
+	this->startGame();
+}
+
 bool GameStage::onTouchBegan(Touch* touch)
 {
 	this->rotationBird->bVo->jump();
@@ -164,125 +283,6 @@ void GameStage::fail()
 	this->setWallColor(color);
 	this->unschedule(schedule_selector(GameStage::loop));
 	this->showFailUI(true);
-}
-
-void GameStage::initGameUI()
-{
-	Layer* gameLayer = (Layer* )this->getChildByTag(gameLayerTag);
-	this->rotationBird = RotationBird::create();
-	this->rotationBird->retain();
-
-	DrawNode* draw = DrawNode::create();
-	draw->setTag(bgDrawTag);
-	gameLayer->addChild(draw);
-
-	Node* wallContainer = (Node* )Node::create();
-	wallContainer->setAnchorPoint(Point(.5f, .5f));
-	wallContainer->setPosition(ScreenUtil::getCenter());
-	wallContainer->setTag(wallContainerTag);
-	gameLayer->addChild(wallContainer);
-
-	//半径
-	float r = 360;
-	this->wallWidth = 25;
-	this->wallHeight = 150;
-	int index = 0;
-	//绘制墙壁
-	int count = this->rotationBird->wallAry->count();
-	for (int i = 0; i < count; ++i)
-	{
-		//绘制墙壁
-		DrawNode* wall = DrawNode::create();
-		wall->setAnchorPoint(Point(0, 0));
-		wall->setContentSize(CCSizeMake(this->wallWidth, this->wallHeight));
-		wall->setTag(wallTag + i);
-
-		if (i % 2 == 0)
-		{
-			//外圈
-			float x = cos((index * 90) * M_PI / 180) * r;
-			float y = sin((index * 90) * M_PI / 180) * r;
-			float angle = atan2(y, x) * 180 / M_PI + 90;
-			if (index % 2 == 0) angle = -angle;
-			wall->setPosition(x, y);
-			wall->setRotation(angle);
-			index++;
-		}
-		else
-		{
-			//内圈
-			CCLOG("i / 2 %d", i / 2);
-			wall->setRotation((i / 2) * 90);
-		}
-		wallContainer->addChild(wall);
-	}
-
-	Node* birdContainer = Node::create();
-	birdContainer->setTag(birdContainerTag);
-	birdContainer->setAnchorPoint(Point(.5f, .5f));
-	birdContainer->setPosition(Point(Director::getInstance()->getVisibleSize().width * .5,
-									 Director::getInstance()->getVisibleSize().height * .5));
-	birdContainer->setRotation(this->rotationBird->angle);
-	Sprite* birdSpt = Sprite::create("bird.png");
-	birdSpt->setTag(birdTag);
-	birdContainer->addChild(birdSpt);
-	gameLayer->addChild(birdContainer);
-
-	LabelTTF* scoreTxt = LabelTTF::create("0", "Arial", 60);
-	scoreTxt->setTag(scoreTxtTag);
-	scoreTxt->setAnchorPoint(Point(.5, .5));
-	scoreTxt->setPosition(ScreenUtil::getCenter());
-	gameLayer->addChild(scoreTxt);
-
-	this->debugNode = DrawNode::create();
-	this->debugNode->drawDot(Vec2(0, 0), 3, ColorUtil::getColor4F(0xFF, 0x00, 0x00, 0xFF));
-	this->addChild(this->debugNode);
-
-	//初始化点击触摸
-	auto listener = EventListenerTouchOneByOne::create();
-	listener->onTouchBegan = CC_CALLBACK_1(GameStage::onTouchBegan, this);
-	Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(listener, 1);
-}
-
-void GameStage::initUI()
-{
-	//游戏层
-	Layer* gameLayer = Layer::create();
-	gameLayer->setTag(gameLayerTag);
-	this->addChild(gameLayer);
-
-	//ui层
-	Layer* uiLayer = Layer::create();
-	uiLayer->setTag(uiLayerTag);
-	this->addChild(uiLayer);
-
-	//开始界面
-	StartScene* startUI = StartScene::create();
-	startUI->setTag(startSceneTag);
-	Menu* menu = (Menu* )startUI->getChildByTag(StartScene::menuTag);
-	MenuItemLabel* startBtn = (MenuItemLabel* )menu->getChildByTag(StartScene::startBtnTag);
-	startBtn->setCallback(CC_CALLBACK_1(GameStage::onClickStartBtn, this));
-	uiLayer->addChild(startUI);
-
-	//失败界面
-	FailScene* failUI = FailScene::create();
-	failUI->setTag(failSceneTag);
-	menu = (Menu* )failUI->getChildByTag(FailScene::menuTag);
-	MenuItemLabel* replayBtn = (MenuItemLabel* )menu->getChildByTag(FailScene::replayBtnTag);
-	replayBtn->setCallback(CC_CALLBACK_1(GameStage::onClickReplayBtn, this));
-	uiLayer->addChild(failUI);
-	failUI->setVisible(false);
-}
-
-void GameStage::onClickStartBtn( Ref* sender )
-{
-	Layer* uiLayer = (Layer* )this->getChildByTag(uiLayerTag);
-	StartScene* startUI = (StartScene* )uiLayer->getChildByTag(startSceneTag);
-	startUI->setVisible(false);
-	//初始化游戏场景
-	this->initGameUI();
-	//开始游戏
-	this->startGame();
 }
 
 void GameStage::onClickReplayBtn( Ref* sender )
