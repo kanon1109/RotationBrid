@@ -24,6 +24,7 @@ void RotationBird::initData()
 	this->bVo->vy = 0;
 	this->bVo->areaIndex = 0;
 	this->isHit = false;
+	this->score = 0;
 }
 
 void RotationBird::update()
@@ -51,17 +52,7 @@ void RotationBird::update()
 			}
 		}
 	}
-
-	/*for (unsigned int j = 0; j < this->bVo->vects.size(); ++j)
-	{
-		Vec2 birdV2d = this->bVo->vects.at(j);
-		CCLOG("birdV2d.x, birdV2d.y %f %f", birdV2d.x, birdV2d.y);
-		vector<float> rotateVect;
-		bird::MathUtil::rotate(rotateVect, ScreenUtil::getCenter().x, ScreenUtil::getCenter().y, 
-								birdV2d.x, birdV2d.y, this->angle, false);
-		birdV2d = Vec2(rotateVect.at(0), rotateVect.at(1));
-		
-	}*/
+	this->checkThough();
 }
 
 bool RotationBird::checkFail()
@@ -111,4 +102,36 @@ void RotationBird::createData()
 		}
 		this->wallAry->addObject(wVo);
 	}
+}
+
+void RotationBird::checkThough()
+{
+	vector<Vec2> posVect;
+	int count = this->wallAry->count();
+	int areaIndex = 0;
+	for (int i = 0; i < count; ++i)
+	{
+		WallVo* wVo = (WallVo* )this->wallAry->objectAtIndex(i);
+		if(wVo->camp == 0)
+		{
+			//内圈
+			posVect.push_back(wVo->referenPos);
+		}
+	}
+	int nextAreaIndex = this->bVo->areaIndex + 1;
+	if (nextAreaIndex >= posVect.size()) nextAreaIndex = 0;
+	Vec2 pos = posVect.at(nextAreaIndex);
+	CCLOG("this->bVo->headBirdPos %f %f", this->bVo->headBirdPos.x, this->bVo->headBirdPos.y);
+	CCLOG("this->bVo->tailBirdPos %f %f", this->bVo->tailBirdPos.x, this->bVo->tailBirdPos.y);
+	CCLOG("pos %f %f", pos.x, pos.y);
+	//CCLOG("this->bVo->headBirdPos.distance(pos) %f", this->bVo->headBirdPos.distance(pos));
+	//CCLOG("this->bVo->tailBirdPos.distance(pos) %f", this->bVo->tailBirdPos.distance(pos));
+	//头部过杆距离大于尾巴过杆距离
+	if (this->bVo->headBirdPos.distance(pos) > this->bVo->tailBirdPos.distance(pos))
+	{
+		this->bVo->areaIndex = nextAreaIndex;	
+		this->score++;
+		NotificationCenter::getInstance()->postNotification(ADD_SCORE);  
+	}
+	posVect.clear();
 }

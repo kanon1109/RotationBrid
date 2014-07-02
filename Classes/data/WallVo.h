@@ -40,6 +40,8 @@ public:
 	vector<Vec2> vects;
 	//属于内圈还是外圈 0内圈，1外圈
 	int camp;
+	//穿越障碍用的参考点
+	Vec2 referenPos;
 private:
 	Node* parent;
 };

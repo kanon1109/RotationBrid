@@ -1,6 +1,8 @@
 #pragma once
 #ifndef _ROTATION_BRID_
 #define _ROTATION_BRID_
+//加分消息
+#define ADD_SCORE "addScore"
 #include "data/BirdVo.h"
 #include "cocos2d.h"
 USING_NS_CC;
@@ -24,6 +26,8 @@ public:
 	bool checkFail();
 	//初始化数据
 	void initData();
+	//分数
+	int score;
 private:
 	//创建数据
 	void createData();
@@ -33,7 +37,9 @@ private:
 	float topPosY;
 	//墙壁的数量
 	int wallCount;
-	//是否碰撞到墙壁
+	//是否碰撞到障碍
 	bool isHit;
+	//判断穿过障碍
+	void checkThough();
 };
 #endif

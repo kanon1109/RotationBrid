@@ -26,14 +26,6 @@ private:
 	RotationBird* rotationBird;
 	//调试绘制
 	DrawNode* debugNode;
-
-	//************************************
-	// Description:	获取墙壁的顶点坐标数组
-	// Parameter: vector<Vec2> & vect	顶点坐标数组（顺时针）
-	// Parameter: Node * spt			显示对象
-	// Returns:   void
-	//************************************
-	void getWallVertex(vector<Vec2> &vect, Node* spt);
 	//墙壁的枚举
 	enum tag
 	{
@@ -48,8 +40,6 @@ private:
 		scoreTxtTag = 13,
 		bgDrawTag = 14
 	};
-	//分数
-	int score;
 	//墙壁的宽度
 	float wallWidth;
 	//墙壁的高度
@@ -70,7 +60,7 @@ private:
 	void setGameGgColor(Color4F color);
 	//设置墙壁颜色
 	void setWallColor(Color4F color);
-	//判断是否穿过障碍
-	void checkThough();
+	//加分数回调
+	void addScoreHandler(Ref* pObj);
 };
 #endif

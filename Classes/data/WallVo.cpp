@@ -37,6 +37,7 @@ void WallVo::update()
 	//高度上下变化
 	this->height = this->prevHeight * this->scaleY;
 
+	//获取顶点列表
 	this->vects.clear();
 	
 	Vec2 p1 = Vec2(this->x + this->width * .5, this->y);
@@ -64,6 +65,11 @@ void WallVo::update()
 	this->vects.push_back(v2d2);
 	this->vects.push_back(v2d3);
 	this->vects.push_back(v2d4);
+	
+	//障碍飞跃点
+	float x = this->x + cos(bird::MathUtil::dgs2rds(-this->angle + 90)) * this->prevHeight;
+	float y = this->y + sin(bird::MathUtil::dgs2rds(-this->angle + 90)) * this->prevHeight;
+	this->referenPos = this->parent->convertToWorldSpace(Vec2(x, y));
 }
 
 void WallVo::initParent(Node* parent)

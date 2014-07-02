@@ -54,10 +54,12 @@ void GameStage::initGameUI()
 	Node* birdContainer = Node::create();
 	birdContainer->setTag(birdContainerTag);
 	birdContainer->setAnchorPoint(Point(.5f, .5f));
+	//birdContainer->setRotation(this->rotationBird->angle);
 	birdContainer->setPosition(Point(Director::getInstance()->getVisibleSize().width * .5,
 									Director::getInstance()->getVisibleSize().height * .5));
-	birdContainer->setRotation(this->rotationBird->angle);
 	this->rotationBird->bVo->initParent(birdContainer);
+	if(birdContainer->getRotation() != 0) birdContainer->setRotation(this->rotationBird->angle);
+	
 
 	Sprite* birdSpt = Sprite::create("bird.png");
 	birdSpt->setTag(birdTag);
@@ -77,6 +79,8 @@ void GameStage::initGameUI()
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->onTouchBegan = CC_CALLBACK_1(GameStage::onTouchBegan, this);
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(listener, 1);
+	//监听加分消息
+	NotificationCenter::getInstance()->addObserver(this, callfuncO_selector(GameStage::addScoreHandler), ADD_SCORE, NULL);  
 }
 
 void GameStage::initUI()
@@ -135,7 +139,6 @@ void GameStage::loop(float dt)
 	if(this->rotationBird->checkFail()) this->fail();
 	this->rotationBird->update();
 	this->render();
-	this->checkThough();
 }
 
 void GameStage::render()
@@ -153,9 +156,13 @@ void GameStage::render()
 	birdSpt->setPositionY(this->rotationBird->bVo->y);
 	birdSpt->setRotation(this->rotationBird->bVo->angle);
 
-	debugNode->clear();
-	int count = this->rotationBird->wallAry->count();
+	/*debugNode->clear();
+	debugNode->drawDot(this->rotationBird->bVo->headBirdPos, 5, ColorUtil::getColor4F(0xFF, 0x00, 0x00, 0xFF));
+	debugNode->drawDot(this->rotationBird->bVo->tailBirdPos, 5, ColorUtil::getColor4F(0xFF, 0x00, 0x00, 0xFF));
+	*/
 
+	//障碍上下移动
+	int count = this->rotationBird->wallAry->count();
 	for (int i = 0; i < count; ++i)
 	{
 		WallVo* wVo = (WallVo* )this->rotationBird->wallAry->objectAtIndex(i);
@@ -163,10 +170,11 @@ void GameStage::render()
 		wall->setScaleY(wVo->scaleY);
 		wall->setContentSize(CCSizeMake(wVo->width, wVo->height));
 
-		debugNode->drawDot(wVo->vects.at(0), 5, ColorUtil::getColor4F(0xFF, 0x00, 0x00, 0xFF));
-		debugNode->drawDot(wVo->vects.at(1), 5, ColorUtil::getColor4F(0xFF, 0x00, 0x00, 0xFF));
-		debugNode->drawDot(wVo->vects.at(2), 5, ColorUtil::getColor4F(0xFF, 0x00, 0x00, 0xFF));
-		debugNode->drawDot(wVo->vects.at(3), 5, ColorUtil::getColor4F(0xFF, 0x00, 0x00, 0xFF));
+		/*if(i == 3)
+		{
+			CCLOG("referenPos %f %f", wVo->referenPos.x, wVo->referenPos.y);
+			debugNode->drawDot(wVo->referenPos, 5, ColorUtil::getColor4F(0xFF, 0x00, 0x00, 0xFF));
+		}*/
 	}
 }
 
@@ -190,7 +198,7 @@ void GameStage::showFailUI( bool flag )
 	Layer* uiLayer = (Layer* )this->getChildByTag(uiLayerTag);
 	FailScene* failUI = (FailScene* )uiLayer->getChildByTag(failSceneTag);
 	failUI->setVisible(flag);
-	failUI->setScore(this->score);
+	failUI->setScore(this->rotationBird->score);
 }
 
 void GameStage::startGame()
@@ -199,14 +207,15 @@ void GameStage::startGame()
 	Layer* gameLayer = (Layer* )this->getChildByTag(gameLayerTag);
 	Node* wallContainer = (Node* ) gameLayer->getChildByTag(wallContainerTag);
 	wallContainer->setRotation(this->rotationBird->wallAngle);
-	
-	this->score = 0;
-	this->setScore(this->score);
+
+	Node* birdContainer = (Node* ) gameLayer->getChildByTag(birdContainerTag);
+	if(birdContainer->getRotation() != 0) birdContainer->setRotation(this->rotationBird->angle);
+
+	this->setScore(this->rotationBird->score);
 	Color4F color = ColorUtil::getColor4F(0x00, 0xAD, 0xFF, 0xFF);
 	this->setGameGgColor(color);
 	this->setWallColor(color);
-	this->schedule(schedule_selector(GameStage::loop), .03f);
-	
+	this->schedule(schedule_selector(GameStage::loop), .03f);	
 }
 
 void GameStage::setScore( int score )
@@ -253,59 +262,7 @@ void GameStage::setWallColor( Color4F color )
 	}
 }
 
-void GameStage::checkThough()
+void GameStage::addScoreHandler( Ref* pObj )
 {
-	Layer* gameLayer = (Layer* )this->getChildByTag(gameLayerTag);
-	//旋转小鸟和墙壁容器
-	Node* container = (Node*)gameLayer->getChildByTag(birdContainerTag);
-	//更新小鸟的位置和角度
-	Sprite* birdSpt = (Sprite*)container->getChildByTag(birdTag);
-	float birdAngle = birdSpt->getRotation();
-	float birdRad = bird::MathUtil::dgs2rds(birdAngle);
-	float dis = birdSpt->getContentSize().width * .5;
-	float bx = dis * cos(birdRad);
-	float by = dis * sin(birdRad);
-	//debugNode->clear();
-	//头部坐标
-	Vec2 headBirdPos = Vec2(birdSpt->getPositionX() + dis,
-							birdSpt->getPositionY());
-	//尾部坐标
-	Vec2 tailBirdPos = Vec2(birdSpt->getPositionX() - dis,
-							birdSpt->getPositionY());
-
-	headBirdPos = birdSpt->getParent()->convertToWorldSpace(headBirdPos);
-	tailBirdPos = birdSpt->getParent()->convertToWorldSpace(tailBirdPos);
-
-	debugNode->drawDot(headBirdPos, 5, ColorUtil::getColor4F(0xFF, 0x00, 0x00, 0xFF));
-	debugNode->drawDot(tailBirdPos, 5, ColorUtil::getColor4F(0xFF, 0xCC, 0x00, 0xFF));
-
-	Node* wallContainer = (Node*)gameLayer->getChildByTag(wallContainerTag);
-	
-	vector<Vec2> posVect;
-	int count = this->rotationBird->wallAry->count();
-	int areaIndex = 0;
-	for (int i = 0; i < count; ++i)
-	{
-		if(i % 2 != 0)
-		{
-			//内圈
-			DrawNode* wall = (DrawNode* )wallContainer->getChildByTag(wallTag + i);
-			float x = wall->getPositionX() + cos(bird::MathUtil::dgs2rds(-wall->getRotation() + 90)) * this->wallHeight;
-			float y = wall->getPositionY() + sin(bird::MathUtil::dgs2rds(-wall->getRotation() + 90)) * this->wallHeight;
-			Vec2 p = wall->getParent()->convertToWorldSpace(Vec2(x, y));
-			posVect.push_back(p);
-		}
-	}
-	int nextAreaIndex = this->rotationBird->bVo->areaIndex + 1;
-	if (nextAreaIndex >= posVect.size()) nextAreaIndex = 0;
-	Vec2 pos = posVect.at(nextAreaIndex);
-	debugNode->drawDot(pos, 5, ColorUtil::getColor4F(0xFF, 0x00, 0x00, 0xFF));
-	//头部过杆距离大于尾巴过杆距离
-	if (headBirdPos.distance(pos) > tailBirdPos.distance(pos))
-	{
-		this->rotationBird->bVo->areaIndex = nextAreaIndex;	
-		this->score++;
-		this->setScore(this->score);
-	}
-	posVect.clear();
+	this->setScore(this->rotationBird->score);
 }

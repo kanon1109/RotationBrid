@@ -54,6 +54,21 @@ void BirdVo::update()
 			this->vects.at(i).y = pos.y;
 		}
 	}
+
+	float dis = this->width * .5;
+	//头部坐标
+	this->headBirdPos = this->parent->convertToWorldSpace(Vec2(this->x + dis, this->y));
+	//尾部坐标
+	this->tailBirdPos = this->parent->convertToWorldSpace(Vec2(this->x - dis, this->y));
+
+	CCLOG("x%f", this->x);
+	CCLOG("y%f", this->y);
+
+	CCLOG("dis%f", dis);
+
+
+	CCLOG("this->headBirdPos %f %f", this->headBirdPos.x, this->headBirdPos.y);
+	CCLOG("this->tailBirdPos %f %f", this->tailBirdPos.x, this->tailBirdPos.y);
 }
 
 void BirdVo::initParent(Node* parent)

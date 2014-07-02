@@ -32,6 +32,10 @@ public:
 	float width;
 	//高度
 	float height;
+	//头部坐标
+	Vec2 headBirdPos;
+	//尾部坐标
+	Vec2 tailBirdPos;
 	//设置高宽
 	void setSize(float w, float h);
 	//初始化
