@@ -28,13 +28,6 @@ private:
 	DrawNode* debugNode;
 
 	//************************************
-	// Method:    getBirdVertex				根据bird获取顶点坐标数组
-	// Parameter: vector<Vec2>& vect		顶点坐标数组（顺时针）
-	// Parameter: Node * spt				显示对象
-	//************************************
-	void getBirdVertex(vector<Vec2> &vect, Node* spt);
-
-	//************************************
 	// Description:	获取墙壁的顶点坐标数组
 	// Parameter: vector<Vec2> & vect	顶点坐标数组（顺时针）
 	// Parameter: Node * spt			显示对象

@@ -34,6 +34,10 @@ public:
 	float height;
 	//设置高宽
 	void setSize(float w, float h);
+	//初始化
+	void initParent(Node* parent);
+private:
+	Node* parent;
 };
 
 #endif // !1

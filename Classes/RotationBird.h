@@ -21,7 +21,7 @@ public:
 	//更新
 	void update();
 	//判断是否超过边界
-	bool outRange();
+	bool checkFail();
 	//初始化数据
 	void initData();
 private:
@@ -33,5 +33,7 @@ private:
 	float topPosY;
 	//墙壁的数量
 	int wallCount;
+	//是否碰撞到墙壁
+	bool isHit;
 };
 #endif
