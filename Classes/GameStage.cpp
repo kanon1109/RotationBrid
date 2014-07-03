@@ -58,8 +58,6 @@ void GameStage::initGameUI()
 	birdContainer->setPosition(Point(Director::getInstance()->getVisibleSize().width * .5,
 									Director::getInstance()->getVisibleSize().height * .5));
 	this->rotationBird->bVo->initParent(birdContainer);
-	if(birdContainer->getRotation() != 0) birdContainer->setRotation(this->rotationBird->angle);
-	
 
 	Sprite* birdSpt = Sprite::create("bird.png");
 	birdSpt->setTag(birdTag);
@@ -209,7 +207,7 @@ void GameStage::startGame()
 	wallContainer->setRotation(this->rotationBird->wallAngle);
 
 	Node* birdContainer = (Node* ) gameLayer->getChildByTag(birdContainerTag);
-	if(birdContainer->getRotation() != 0) birdContainer->setRotation(this->rotationBird->angle);
+	birdContainer->setRotation(this->rotationBird->angle);
 
 	this->setScore(this->rotationBird->score);
 	Color4F color = ColorUtil::getColor4F(0x00, 0xAD, 0xFF, 0xFF);

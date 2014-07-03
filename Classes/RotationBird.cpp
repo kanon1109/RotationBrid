@@ -5,6 +5,7 @@
 #include "utils/ScreenUtil.h"
 RotationBird::RotationBird()
 {
+	this->initData();
 	this->createData();
 }
 
