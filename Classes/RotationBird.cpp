@@ -5,8 +5,8 @@
 #include "utils/ScreenUtil.h"
 RotationBird::RotationBird()
 {
-	this->initData();
 	this->createData();
+	this->initData();
 }
 
 RotationBird::~RotationBird()
@@ -23,6 +23,8 @@ void RotationBird::initData()
 	this->bVo->y = 240;
 	this->bVo->vx = 10;
 	this->bVo->vy = 0;
+	this->bVo->wingX = 8;
+	this->bVo->wingY = 9;
 	this->bVo->areaIndex = 0;
 	this->isHit = false;
 	this->score = 0;

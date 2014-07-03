@@ -62,6 +62,10 @@ void GameStage::initGameUI()
 	Sprite* birdSpt = Sprite::create("bird.png");
 	birdSpt->setTag(birdTag);
 	birdContainer->addChild(birdSpt);
+
+	Sprite* wingSpt = Sprite::create("wing.png");
+	wingSpt->setTag(wingTag);
+	birdSpt->addChild(wingSpt);
 	gameLayer->addChild(birdContainer);
 
 	LabelTTF* scoreTxt = LabelTTF::create("0", "Arial", 60);
@@ -154,6 +158,10 @@ void GameStage::render()
 	birdSpt->setPositionY(this->rotationBird->bVo->y);
 	birdSpt->setRotation(this->rotationBird->bVo->angle);
 
+	Sprite* wingSpt = (Sprite*)birdSpt->getChildByTag(wingTag);
+	wingSpt->setPositionX(this->rotationBird->bVo->wingX);
+	wingSpt->setPositionY(this->rotationBird->bVo->wingY);
+
 	/*debugNode->clear();
 	debugNode->drawDot(this->rotationBird->bVo->headBirdPos, 5, ColorUtil::getColor4F(0xFF, 0x00, 0x00, 0xFF));
 	debugNode->drawDot(this->rotationBird->bVo->tailBirdPos, 5, ColorUtil::getColor4F(0xFF, 0x00, 0x00, 0xFF));
@@ -196,7 +204,13 @@ void GameStage::showFailUI( bool flag )
 	Layer* uiLayer = (Layer* )this->getChildByTag(uiLayerTag);
 	FailScene* failUI = (FailScene* )uiLayer->getChildByTag(failSceneTag);
 	failUI->setVisible(flag);
-	failUI->setScore(this->rotationBird->score);
+	int bestScore = UserDefault::getInstance()->getIntegerForKey("best", 0);
+	if(this->rotationBird->score > bestScore)
+	{
+		//重置最高分
+		UserDefault::getInstance()->setIntegerForKey("best", this->rotationBird->score);
+	}
+	failUI->setScore(this->rotationBird->score, bestScore);
 }
 
 void GameStage::startGame()
@@ -208,6 +222,10 @@ void GameStage::startGame()
 
 	Node* birdContainer = (Node* ) gameLayer->getChildByTag(birdContainerTag);
 	birdContainer->setRotation(this->rotationBird->angle);
+	Sprite* birdSpt = (Sprite*)birdContainer->getChildByTag(birdTag);
+	Sprite* wingSpt = (Sprite*)birdSpt->getChildByTag(wingTag);
+	wingSpt->setPositionX(this->rotationBird->bVo->wingX);
+	wingSpt->setPositionY(this->rotationBird->bVo->wingY);
 
 	this->setScore(this->rotationBird->score);
 	Color4F color = ColorUtil::getColor4F(0x00, 0xAD, 0xFF, 0xFF);

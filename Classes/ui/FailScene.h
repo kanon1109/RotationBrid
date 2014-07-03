@@ -10,13 +10,14 @@ public:
 	~FailScene(void);
 	CREATE_FUNC(FailScene);
 	//…Ë÷√∑÷ ˝
-	void setScore(int score);
+	void setScore(int score, int bestScore);
 
 	enum FailTag
 	{
 		scoreValTxtTag,
 		replayBtnTag,
-		menuTag
+		menuTag,
+		bestScoreValTxtTag
 	};
 };
 #endif

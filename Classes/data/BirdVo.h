@@ -20,6 +20,11 @@ public:
 	float vy;
 	//重力
 	float g;
+	//翅膀位置
+	float wingX;
+	float wingY;
+	//翅膀扇动速度
+	float wingSpeed;
 	//角度
 	float angle;
 	//跳跃

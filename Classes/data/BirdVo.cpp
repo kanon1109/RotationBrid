@@ -11,6 +11,9 @@ BirdVo::BirdVo(void)
 	this->areaIndex = 0;
 	this->width = 0;
 	this->height = 0;
+	this->wingX = 8;
+	this->wingY = 9;
+	this->wingSpeed = 1;
 	this->parent = NULL;
 }
 
@@ -60,15 +63,10 @@ void BirdVo::update()
 	this->headBirdPos = this->parent->convertToWorldSpace(Vec2(this->x + dis, this->y));
 	//Î²²¿×ø±ê
 	this->tailBirdPos = this->parent->convertToWorldSpace(Vec2(this->x - dis, this->y));
-
-	CCLOG("x%f", this->x);
-	CCLOG("y%f", this->y);
-
-	CCLOG("dis%f", dis);
-
-
-	CCLOG("this->headBirdPos %f %f", this->headBirdPos.x, this->headBirdPos.y);
-	CCLOG("this->tailBirdPos %f %f", this->tailBirdPos.x, this->tailBirdPos.y);
+	//³á°ò»Ó¶¯
+	this->wingY+=this->wingSpeed;
+	if(this->wingY > 12 || this->wingY < 7)
+		this->wingSpeed *= -1;
 }
 
 void BirdVo::initParent(Node* parent)

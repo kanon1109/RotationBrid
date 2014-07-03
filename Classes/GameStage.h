@@ -38,7 +38,8 @@ private:
 		gameLayerTag = 11,
 		uiLayerTag = 12,
 		scoreTxtTag = 13,
-		bgDrawTag = 14
+		bgDrawTag = 14,
+		wingTag = 15
 	};
 	//Ç½±ÚµÄ¿í¶È
 	float wallWidth;
