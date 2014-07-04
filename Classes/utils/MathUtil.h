@@ -114,7 +114,7 @@ public:
 	* @param	b 边
 	* @param	c 边
 	*/
-	static void MathUtil::threeSidesMathAngle(vector<float>&vect, float a, float b, float c);
+	static void threeSidesMathAngle(vector<float>&vect, float a, float b, float c);
 
 	/**
 	* 坐标旋转公式
@@ -126,7 +126,7 @@ public:
 	* @param	angle		旋转角度
 	* @param	reverse		是否逆时针旋转
 	*/
-	static void MathUtil::rotate(vector<float>&vect, float cx, float cy,
+	static void rotate(vector<float>&vect, float cx, float cy,
 									float tx, float ty,
 									float angle, bool reverse);
 

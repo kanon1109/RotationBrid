@@ -24,6 +24,16 @@ void GameStage::initGameUI()
 	draw->setTag(bgDrawTag);
 	gameLayer->addChild(draw);
 
+	Sprite* centerBg = Sprite::create("centerBg.png");
+	centerBg->setTag(centerBgTag);
+	centerBg->setPosition(ScreenUtil::getCenter());
+	gameLayer->addChild(centerBg);
+
+	Sprite* blueCenterBg = Sprite::create("blueCenterBg.png");
+	blueCenterBg->setPosition(ScreenUtil::getCenter());
+	blueCenterBg->setTag(blueCenterBgTag);
+	gameLayer->addChild(blueCenterBg);
+
 	Node* wallContainer = (Node* )Node::create();
 	wallContainer->setAnchorPoint(Point(.5f, .5f));
 	wallContainer->setPosition(ScreenUtil::getCenter());
@@ -41,9 +51,11 @@ void GameStage::initGameUI()
 	{
 		WallVo* wVo = (WallVo* )this->rotationBird->wallAry->objectAtIndex(i);
 		wVo->initParent(wallContainer);
+
+		Sprite* wall = Sprite::create("wallBg.png");
 		//绘制墙壁
-		DrawNode* wall = DrawNode::create();
-		wall->setAnchorPoint(Point(0, 0));
+		//DrawNode* wall = DrawNode::create();
+		wall->setAnchorPoint(Point(.5, 0));
 		wall->setContentSize(CCSizeMake(this->wallWidth, this->wallHeight));
 		wall->setTag(wallTag + i);
 		wall->setPosition(wVo->x, wVo->y);
@@ -54,9 +66,7 @@ void GameStage::initGameUI()
 	Node* birdContainer = Node::create();
 	birdContainer->setTag(birdContainerTag);
 	birdContainer->setAnchorPoint(Point(.5f, .5f));
-	//birdContainer->setRotation(this->rotationBird->angle);
-	birdContainer->setPosition(Point(Director::getInstance()->getVisibleSize().width * .5,
-									Director::getInstance()->getVisibleSize().height * .5));
+	birdContainer->setPosition(ScreenUtil::getCenter());
 	this->rotationBird->bVo->initParent(birdContainer);
 
 	Sprite* birdSpt = Sprite::create("bird.png");
@@ -74,15 +84,16 @@ void GameStage::initGameUI()
 	scoreTxt->setPosition(ScreenUtil::getCenter());
 	gameLayer->addChild(scoreTxt);
 
-	this->debugNode = DrawNode::create();
-	this->addChild(this->debugNode);
+	//this->debugNode = DrawNode::create();
+	//this->addChild(this->debugNode);
 
 	//初始化点击触摸
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->onTouchBegan = CC_CALLBACK_1(GameStage::onTouchBegan, this);
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(listener, 1);
 	//监听加分消息
-	NotificationCenter::getInstance()->addObserver(this, callfuncO_selector(GameStage::addScoreHandler), ADD_SCORE, NULL);  
+	NotificationCenter::getInstance()->addObserver(this, callfuncO_selector(GameStage::addScoreHandler), ADD_SCORE, NULL);
+	NotificationCenter::getInstance()->addObserver(this, callfuncO_selector(GameStage::failHandler), FAIL, NULL);
 }
 
 void GameStage::initUI()
@@ -119,7 +130,8 @@ void GameStage::onClickStartBtn( Ref* sender )
 {
 	Layer* uiLayer = (Layer* )this->getChildByTag(uiLayerTag);
 	StartScene* startUI = (StartScene* )uiLayer->getChildByTag(startSceneTag);
-	startUI->setVisible(false);
+	startUI->removeFromParent();
+	//startUI->setVisible(false);
 	//初始化游戏场景
 	this->initGameUI();
 	//开始游戏
@@ -138,7 +150,6 @@ GameStage::~GameStage()
 
 void GameStage::loop(float dt)
 {
-	if(this->rotationBird->checkFail()) this->fail();
 	this->rotationBird->update();
 	this->render();
 }
@@ -164,8 +175,7 @@ void GameStage::render()
 
 	/*debugNode->clear();
 	debugNode->drawDot(this->rotationBird->bVo->headBirdPos, 5, ColorUtil::getColor4F(0xFF, 0x00, 0x00, 0xFF));
-	debugNode->drawDot(this->rotationBird->bVo->tailBirdPos, 5, ColorUtil::getColor4F(0xFF, 0x00, 0x00, 0xFF));
-	*/
+	debugNode->drawDot(this->rotationBird->bVo->tailBirdPos, 5, ColorUtil::getColor4F(0xFF, 0x00, 0x00, 0xFF));*/
 
 	//障碍上下移动
 	int count = this->rotationBird->wallAry->count();
@@ -175,12 +185,6 @@ void GameStage::render()
 		DrawNode* wall = (DrawNode*)wallContainer->getChildByTag(wallTag + i);
 		wall->setScaleY(wVo->scaleY);
 		wall->setContentSize(CCSizeMake(wVo->width, wVo->height));
-
-		/*if(i == 3)
-		{
-			CCLOG("referenPos %f %f", wVo->referenPos.x, wVo->referenPos.y);
-			debugNode->drawDot(wVo->referenPos, 5, ColorUtil::getColor4F(0xFF, 0x00, 0x00, 0xFF));
-		}*/
 	}
 }
 
@@ -188,7 +192,8 @@ void GameStage::fail()
 {
 	Color4F color = ColorUtil::getColor4F(0x00, 0x00, 0x00, 0xFF);
 	this->setGameGgColor(color);
-	this->setWallColor(color);
+	Color3B color3b = Color3B(0x00, 0x00, 0x00);
+	this->setWallColor(color3b);
 	this->unschedule(schedule_selector(GameStage::loop));
 	this->showFailUI(true);
 }
@@ -230,7 +235,8 @@ void GameStage::startGame()
 	this->setScore(this->rotationBird->score);
 	Color4F color = ColorUtil::getColor4F(0x00, 0xAD, 0xFF, 0xFF);
 	this->setGameGgColor(color);
-	this->setWallColor(color);
+	Color3B color3b = Color3B(0xAD, 0xFF, 0xFF);
+	this->setWallColor(color3b);
 	this->schedule(schedule_selector(GameStage::loop), .03f);	
 }
 
@@ -248,37 +254,29 @@ void GameStage::setGameGgColor(Color4F color)
 	DrawNode* draw = (DrawNode* )gameLayer->getChildByTag(bgDrawTag);
 	draw->clear();
 	//绘制背景
-	Vec2 points[] = { Vec2(0, 0), Vec2(0, ScreenUtil::getScreenHeight()),
-					  Vec2(ScreenUtil::getScreenWidth(), ScreenUtil::getScreenHeight()),
-					  Vec2(ScreenUtil::getScreenWidth(), 0) };
-	
+	Vec2 points[] = { ScreenUtil::getLeftBottom(), ScreenUtil::getLeftTop(),
+					  ScreenUtil::getRightTop(), ScreenUtil::getRightBottom() };
 	//背景
 	draw->drawPolygon(points, 4, color, 0, color);
-	//白色大园
-	draw->drawDot(Vec2(ScreenUtil::getScreenWidth() *.5, ScreenUtil::getScreenHeight() *.5), 280,
-						ColorUtil::getColor4F(0xFF, 0xFF, 0xFF, 0xFF));
-	//中间蓝色小圆形
-	draw->drawDot(Vec2(ScreenUtil::getScreenWidth() *.5, ScreenUtil::getScreenHeight() *.5), 80, color);
 }
 
-void GameStage::setWallColor( Color4F color )
+void GameStage::setWallColor(Color3B color)
 {
 	Layer* gameLayer = (Layer* )this->getChildByTag(gameLayerTag);
 	Node* wallContainer = (Node*)gameLayer->getChildByTag(wallContainerTag);
-	Vec2 wallPoints[] = { Vec2(-this->wallWidth / 2, 0), 
-							Vec2(-this->wallWidth / 2, this->wallHeight),
-							Vec2(this->wallWidth / 2, this->wallHeight), 
-							Vec2(this->wallWidth / 2, 0)};
-	int count = this->rotationBird->wallAry->count();
-	for (int i = 0; i < count; ++i)
-	{
-		DrawNode* wall = (DrawNode* ) wallContainer->getChildByTag(wallTag + i);
-		wall->clear();
-		wall->drawPolygon(wallPoints, 4, color, 0, color);
-	}
+	wallContainer->setCascadeColorEnabled(true);
+	wallContainer->setColor(color);
+
+	Sprite* blueCenterBg = (Sprite*)gameLayer->getChildByTag(blueCenterBgTag);
+	blueCenterBg->setColor(color);
 }
 
 void GameStage::addScoreHandler( Ref* pObj )
 {
 	this->setScore(this->rotationBird->score);
+}
+
+void GameStage::failHandler(Ref* pObj)
+{
+	this->fail();
 }

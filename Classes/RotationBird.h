@@ -3,6 +3,7 @@
 #define _ROTATION_BRID_
 //加分消息
 #define ADD_SCORE "addScore"
+#define FAIL "fail"
 #include "data/BirdVo.h"
 #include "cocos2d.h"
 USING_NS_CC;
@@ -22,13 +23,13 @@ public:
 	float wallAngle;
 	//更新
 	void update();
-	//判断是否超过边界
-	bool checkFail();
 	//初始化数据
 	void initData();
 	//分数
 	int score;
 private:
+	//判断是否超过边界
+	bool checkFail();
 	//创建数据
 	void createData();
 	//地面高度

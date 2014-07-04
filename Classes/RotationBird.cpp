@@ -32,6 +32,7 @@ void RotationBird::initData()
 
 void RotationBird::update()
 {
+	if (this->isHit) return;
 	this->angle++;
 	this->wallAngle -= .5;
 	this->bVo->update();
@@ -56,11 +57,13 @@ void RotationBird::update()
 		}
 	}
 	this->checkThough();
+	if (this->checkFail())
+		NotificationCenter::getInstance()->postNotification(FAIL);
 }
 
 bool RotationBird::checkFail()
 {
-	if(this->bVo->y <= this->floorPosY || 
+	if( this->bVo->y <= this->floorPosY || 
 		this->bVo->y >= this->topPosY || 
 		this->isHit)
 		return true;
@@ -70,7 +73,7 @@ bool RotationBird::checkFail()
 void RotationBird::createData()
 {
 	this->bVo = BirdVo::create();
-	this->bVo->setSize(31, 22);
+	this->bVo->setSize(28, 19);
 	this->bVo->retain();
 
 	this->wallAry = Array::create();
@@ -79,13 +82,13 @@ void RotationBird::createData()
 	this->wallCount = 8;
 	int index = 0;
 	//°ë¾¶
-	float r = 360;
+	float r = 370;
 	for (int i = 0; i < this->wallCount; ++i)
 	{
 		WallVo* wVo = WallVo::create();
 		wVo->setSize(25, 150);
-		wVo->minRangeScaleY = 0.7;
-		wVo->maxRangeScaleY = 1.3;
+		wVo->minRangeScaleY = 0.6;
+		wVo->maxRangeScaleY = 1.4;
 		if (i % 2 == 0)
 		{
 			//ÍâÈ¦
@@ -124,11 +127,6 @@ void RotationBird::checkThough()
 	int nextAreaIndex = this->bVo->areaIndex + 1;
 	if (nextAreaIndex >= posVect.size()) nextAreaIndex = 0;
 	Vec2 pos = posVect.at(nextAreaIndex);
-	CCLOG("this->bVo->headBirdPos %f %f", this->bVo->headBirdPos.x, this->bVo->headBirdPos.y);
-	CCLOG("this->bVo->tailBirdPos %f %f", this->bVo->tailBirdPos.x, this->bVo->tailBirdPos.y);
-	CCLOG("pos %f %f", pos.x, pos.y);
-	//CCLOG("this->bVo->headBirdPos.distance(pos) %f", this->bVo->headBirdPos.distance(pos));
-	//CCLOG("this->bVo->tailBirdPos.distance(pos) %f", this->bVo->tailBirdPos.distance(pos));
 	//Í·²¿¹ý¸Ë¾àÀë´óÓÚÎ²°Í¹ý¸Ë¾àÀë
 	if (this->bVo->headBirdPos.distance(pos) > this->bVo->tailBirdPos.distance(pos))
 	{

@@ -1,12 +1,11 @@
 #include "StartScene.h"
-#include "ColorUtil.h"
+#include "utils/ColorUtil.h"
 #include "utils/ScreenUtil.h"
 
 StartScene::StartScene(void)
 {
-	Vec2 points[] = { Vec2(0, 0), Vec2(0, ScreenUtil::getScreenHeight()),
-					  Vec2(ScreenUtil::getScreenWidth(), ScreenUtil::getScreenHeight()),
-					  Vec2(ScreenUtil::getScreenWidth(), 0) };
+	Vec2 points[] = { ScreenUtil::getLeftBottom(), ScreenUtil::getLeftTop(),
+						ScreenUtil::getRightTop(), ScreenUtil::getRightBottom() };
 	DrawNode* draw = DrawNode::create();
 	//±³¾°
 	draw->drawPolygon(points, 4, ColorUtil::getColor4F(0x00 , 0xAD , 0xFF, 0xFF),

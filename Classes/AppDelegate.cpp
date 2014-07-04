@@ -27,7 +27,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     // set FPS. the default value is 1.0/60 if you don't call this
     director->setAnimationInterval(1.0 / 60);
 
-	ScreenUtil::setScreenSize(960, 640, false);
+	ScreenUtil::setScreenSize(960, 640);
 
     // create a scene. it's an autorelease object
 	auto scene = GameStage::create();

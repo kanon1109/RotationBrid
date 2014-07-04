@@ -11,6 +11,8 @@ WallVo::WallVo()
 	this->y = 0;
 	this->angle = 0;
 	this->camp = 0;
+	this->maxRangeScaleY = 1;
+	this->minRangeScaleY = 0;
 }
 
 

@@ -39,7 +39,9 @@ private:
 		uiLayerTag = 12,
 		scoreTxtTag = 13,
 		bgDrawTag = 14,
-		wingTag = 15
+		wingTag = 15,
+		centerBgTag = 16,
+		blueCenterBgTag = 17
 	};
 	//墙壁的宽度
 	float wallWidth;
@@ -48,9 +50,9 @@ private:
 	//失败
 	void fail();
 	//开始按钮点击事件
-	void GameStage::onClickStartBtn(Ref* sender);
+	void onClickStartBtn(Ref* sender);
 	//重玩按钮点击事件
-	void GameStage::onClickReplayBtn(Ref* sender);
+	void onClickReplayBtn(Ref* sender);
 	//显示失败界面
 	void showFailUI(bool flag);
 	//开始游戏
@@ -60,8 +62,10 @@ private:
 	//绘制游戏背景
 	void setGameGgColor(Color4F color);
 	//设置墙壁颜色
-	void setWallColor(Color4F color);
+	void setWallColor(Color3B color);
 	//加分数回调
 	void addScoreHandler(Ref* pObj);
+	//失败回调
+	void failHandler(Ref* pObj);
 };
 #endif
