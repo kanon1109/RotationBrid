@@ -12,6 +12,7 @@
 proj.linux/*
 proj.ios_mac/*
 proj.android/*
+!proj.android/jni/*.mk
 proj.wp8-xaml/*
 proj.winrt/*
 proj.tizen/*
