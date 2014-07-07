@@ -6,6 +6,8 @@
 #include "data/WallVo.h"
 #include "ui/StartScene.h"
 #include "ui/FailScene.h"
+#include "SimpleAudioEngine.h"
+using namespace CocosDenshion;
 using namespace bird;
 GameStage::GameStage()
 {
@@ -124,6 +126,12 @@ void GameStage::initUI()
 	replayBtn->setCallback(CC_CALLBACK_1(GameStage::onClickReplayBtn, this));
 	uiLayer->addChild(failUI);
 	failUI->setVisible(false);
+
+	SimpleAudioEngine::sharedEngine()->preloadEffect("sfx_wing.mp3");
+	SimpleAudioEngine::sharedEngine()->preloadEffect("sfx_hit.mp3");
+	SimpleAudioEngine::sharedEngine()->preloadEffect("sfx_point.mp3");
+	
+
 }
 
 void GameStage::onClickStartBtn( Ref* sender )
@@ -140,6 +148,7 @@ void GameStage::onClickStartBtn( Ref* sender )
 
 bool GameStage::onTouchBegan(Touch* touch)
 {
+	SimpleAudioEngine::getInstance()->playEffect("sfx_wing.mp3");
 	this->rotationBird->bVo->jump();
 	return true;
 }
@@ -190,6 +199,7 @@ void GameStage::render()
 
 void GameStage::fail()
 {
+	SimpleAudioEngine::getInstance()->playEffect("sfx_hit.mp3");
 	Color4F color = ColorUtil::getColor4F(0x00, 0x00, 0x00, 0xFF);
 	this->setGameGgColor(color);
 	Color3B color3b = Color3B(0x00, 0x00, 0x00);
@@ -273,6 +283,7 @@ void GameStage::setWallColor(Color3B color)
 
 void GameStage::addScoreHandler( Ref* pObj )
 {
+	SimpleAudioEngine::getInstance()->playEffect("sfx_point.mp3");
 	this->setScore(this->rotationBird->score);
 }
 
