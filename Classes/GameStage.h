@@ -47,6 +47,8 @@ private:
 	float wallWidth;
 	//墙壁的高度
 	float wallHeight;
+	//是否失败
+	bool isFail;
 	//失败
 	void fail();
 	//开始按钮点击事件

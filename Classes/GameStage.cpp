@@ -130,8 +130,6 @@ void GameStage::initUI()
 	SimpleAudioEngine::sharedEngine()->preloadEffect("sfx_wing.mp3");
 	SimpleAudioEngine::sharedEngine()->preloadEffect("sfx_hit.mp3");
 	SimpleAudioEngine::sharedEngine()->preloadEffect("sfx_point.mp3");
-	
-
 }
 
 void GameStage::onClickStartBtn( Ref* sender )
@@ -148,8 +146,11 @@ void GameStage::onClickStartBtn( Ref* sender )
 
 bool GameStage::onTouchBegan(Touch* touch)
 {
-	SimpleAudioEngine::getInstance()->playEffect("sfx_wing.mp3");
-	this->rotationBird->bVo->jump();
+	if(!this->isFail)
+	{
+		SimpleAudioEngine::getInstance()->playEffect("sfx_wing.mp3");
+		this->rotationBird->bVo->jump();
+	}
 	return true;
 }
 
@@ -230,6 +231,7 @@ void GameStage::showFailUI( bool flag )
 
 void GameStage::startGame()
 {
+	this->isFail = false;
 	this->rotationBird->initData();
 	Layer* gameLayer = (Layer* )this->getChildByTag(gameLayerTag);
 	Node* wallContainer = (Node* ) gameLayer->getChildByTag(wallContainerTag);
@@ -289,5 +291,6 @@ void GameStage::addScoreHandler( Ref* pObj )
 
 void GameStage::failHandler(Ref* pObj)
 {
+	this->isFail = true;
 	this->fail();
 }
