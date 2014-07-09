@@ -57,6 +57,9 @@
     <ClCompile Include="..\Classes\RotationBird.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\data\ItemVo.cpp">
+      <Filter>Classes\data</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -94,6 +97,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\RotationBird.h">
       <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\data\ItemVo.h">
+      <Filter>Classes\data</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
