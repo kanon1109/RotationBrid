@@ -67,5 +67,7 @@ private:
 	void addScoreHandler(Ref* pObj);
 	//失败回调
 	void failHandler(Ref* pObj);
+	//添加道具
+	void addItemHandler(Ref* pObj);
 };
 #endif

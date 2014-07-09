@@ -27,7 +27,9 @@ void RotationBird::initData()
 	this->bVo->wingY = 9;
 	this->bVo->areaIndex = 0;
 	this->isHit = false;
+	this->isFail = false;
 	this->score = 0;
+	this->curItemVo = NULL;
 }
 
 void RotationBird::update()
@@ -37,28 +39,13 @@ void RotationBird::update()
 	this->wallAngle -= .5;
 	this->bVo->update();
 	if (this->bVo->y < this->floorPosY) this->bVo->y = this->floorPosY;
-	//计算墙壁
-	for (int i = 0; i < this->wallCount; ++i)
-	{
-		WallVo* wVo = (WallVo* )this->wallAry->objectAtIndex(i);
-		wVo->update();
-		for (unsigned int j = 0; j < this->bVo->vects.size(); ++j)
-		{
-			Vec2 birdV2d = this->bVo->vects.at(j);
-			if (bird::MathUtil::isInsideSquare(wVo->vects.at(0),
-												wVo->vects.at(1),
-												wVo->vects.at(2),
-												wVo->vects.at(3),
-												birdV2d))
-			{
-				this->isHit = true;
-				break;
-			}
-		}
-	}
+	this->isHit = this->checkWallHit();
 	this->checkThough();
 	if (this->checkFail())
+	{
+		this->isFail = true;
 		NotificationCenter::getInstance()->postNotification(FAIL);
+	}	
 }
 
 bool RotationBird::checkFail()
@@ -133,6 +120,61 @@ void RotationBird::checkThough()
 		this->bVo->areaIndex = nextAreaIndex;	
 		this->score++;
 		NotificationCenter::getInstance()->postNotification(ADD_SCORE);  
+		//创建一个道具
+		this->createItem();
 	}
 	posVect.clear();
+}
+
+void RotationBird::createItem()
+{
+	if (this->curItemVo) return;
+	//小于3分之一概率 创建一个道具
+	if (Random::boolean(.3))
+	{
+		//半径
+		int r = Random::randomInt(90, 270);
+		int angle = 90;
+		int area = Random::randomInt(0, 3);
+		int randAngle = Random::randomInt(30, 60) + angle * area;
+		this->curItemVo = ItemVo::create();
+		this->curItemVo->type = 1;
+		this->curItemVo->x = cos(bird::MathUtil::dgs2rds(randAngle)) * r;
+		this->curItemVo->y = sin(bird::MathUtil::dgs2rds(randAngle)) * r;
+		NotificationCenter::getInstance()->postNotification(ADD_ITEM, this->curItemVo);
+	}
+}
+
+bool RotationBird::checkWallHit()
+{
+	//计算墙壁
+	for (int i = 0; i < this->wallCount; ++i)
+	{
+		WallVo* wVo = (WallVo*)this->wallAry->objectAtIndex(i);
+		wVo->update();
+		for (unsigned int j = 0; j < this->bVo->vects.size(); ++j)
+		{
+			Vec2 birdV2d = this->bVo->vects.at(j);
+			if (bird::MathUtil::isInsideSquare(wVo->vects.at(0),
+				wVo->vects.at(1),
+				wVo->vects.at(2),
+				wVo->vects.at(3),
+				birdV2d))
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+bool RotationBird::checkItemHit()
+{
+	if (bird::MathUtil::distance(this->curItemVo->x, this->curItemVo->y,
+								this->bVo->x, this->bVo->y) < this->bVo->width)
+	{
+		//hit
+		return true;
+	}
+	return false;
 }
